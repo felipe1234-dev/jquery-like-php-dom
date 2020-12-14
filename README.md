@@ -34,9 +34,7 @@ But for now, let's start with the example page in our source code, which looks l
 <html lang="en">
     <head>
         <meta charset="utf-8">
-        <title>The HTML5 Herald</title>
-        <meta name="description" content="The HTML5 Herald">
-        <meta name="author" content="SitePoint">
+        <title>Sample HTML Page</title>
         <link rel="stylesheet" href="css/styles.css?v=1.0">
         <style>
             body {
@@ -70,10 +68,8 @@ But for now, let's start with the example page in our source code, which looks l
             et malesuada fames ac turpis egestas. Vestibulum tortor quam, feugiat vitae, 
             ultricies eget, tempor sit amet, ante. Donec eu libero sit amet quam egestas 
             semper. <em>Aenean ultricies mi vitae est.</em> Mauris placerat eleifend leo. 
-            Quisque sit amet est et sapien ullamcorper pharetra. Vestibulum erat wisi,
-            condimentum sed, <code>commodo vitae</code>, ornare sit amet, wisi. Aenean 
-            fermentum, elit eget tincidunt condimentum, eros ipsum rutrum orci, sagittis 
-            tempus lacus enim ac dui. <a href="#">Donec non enim</a> in turpis pulvinar 
+            Quisque sit amet est et sapien ullamcorper pharetra.
+            <a href="#">Donec non enim</a> in turpis pulvinar 
             facilisis. Ut felis.</p>
         <h2>Header Level 2</h2>
         <ol>
@@ -95,7 +91,8 @@ Click the links to start learning:
 
 |Routines|
 |------------|
-| [`query()` function](#query-routine) |
+| [`query()` function and CSS selector](#query-routine) |
+| [`{text}`, `{attrs}` and `{comment}`](#other-css-selectors) |
 | [`echo()` function](#echo-routine) |
 | [`return()` function](#return-routine) |
 | [`count()` function](#count-routine) |
@@ -112,6 +109,26 @@ Click the links to start learning:
 | [`replaceText()` and `replaceTextCallback()` function](#replaceText-&-replaceTextCallback-routine) |
 
 
+## `query` routine
+We have already talked about it previously
+## `return` routine
 ## `echo` routine
+We have already talked about it previously
+## `return` routine
+## `echo` routine
+We have already talked about it previously
+## `return` routine## `echo` routine
+We have already talked about it previously
+## `return` routine## `echo` routine
+We have already talked about it previously
+## `return` routine## `echo` routine
+We have already talked about it previously
+## `return` routine## `echo` routine
+We have already talked about it previously
+## `return` routine## `echo` routine
+We have already talked about it previously
+## `return` routine## `echo` routine
+We have already talked about it previously
+## `return` routine## `echo` routine
 We have already talked about it previously
 ## `return` routine
