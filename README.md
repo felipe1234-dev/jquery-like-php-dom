@@ -132,7 +132,7 @@ However, note that `query` by itself does not return anything, it needs a comple
 
 When we are parsing documents, we may need to select texts within `p` tags, or manipulate or confirm the attributes of a specific tag, or even delete all HTML comments in a document, such as `<!-- this is an example comment -->`.
 
-That's why we have the triad: `::text`,` ::attributes` and `::comment` - but how can we use them?
+That's why we have the triad: `::text`, `::attributes` and `::comment` - but how can we use them?
 
 ### `::text` selector
 
@@ -152,7 +152,7 @@ $doc->Q("h1::text");
 
 ```
 
-To print the detected information we can use the `text` function, check the following example:
+To print the detected information we can also use the `echo` function, check the following example:
 
 ### Html
 
@@ -173,7 +173,7 @@ To print the detected information we can use the `text` function, check the foll
 include "path/webscraper.php";
 $doc = new WebScraper("<!DOCTYPE html><html><body>".$html."</body></html>");
 
-echo $doc->Q("h1[2]::text")->echo();
+$doc->Q("h1[2]::text")->echo();
 
 ```
 
@@ -189,3 +189,38 @@ As you can see, the `echo` function is multifunctional, it can be used to echo a
 ### `::attributes` selector
 
 When we want to make a list of attributes or perhaps delete all attributes of a specific tag, we can use the selector `::attributes` to access them.
+
+**Deleting attributes**
+
+```php
+include "path/webscraper.php";
+$doc = new WebScraper("<!DOCTYPE html><html><body>".$html."</body></html>");
+
+$doc->Q("h1::attributes")->delete();
+
+// or 
+
+$doc->Q("::attributes")->delete();
+// deletes all attributes of all tags
+
+```
+
+And here's how you can print the attributes of an element:
+
+```php
+include "path/webscraper.php";
+$doc = new WebScraper("<!DOCTYPE html><html><body>".$html."</body></html>");
+
+$doc->Q("h1::attributes")->echo();
+
+```
+#### Output
+
+```html
+
+h1[attribute]  => "value"
+h1[attribute2] => "value"
+
+```
+### `::comment` selector
+
