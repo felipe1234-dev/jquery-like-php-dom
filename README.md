@@ -25,7 +25,7 @@ $doc->echo();
 
 ```
 
-Simple as that! But for now, let's start with the sample pages in the `samples` folder, in order to give examples.
+Simple as that! 
 
 ## Start
 Click on the links below to navigate between sections and start learning:
@@ -86,7 +86,7 @@ boa who sat upright.</p>
 
 ```php
 include "path/webscraper.php";
-$doc = new WebScraper("samples/sample1.html");
+$doc = new WebScraper("<!DOCTYPE html><html><body>".$html."</body></html>");
 
 $doc->Q("ul li[2]");
 
@@ -108,7 +108,7 @@ It selects the second item in the list. We can also do the following to select m
 
 ```php
 include "path/webscraper.php";
-$doc = new WebScraper("samples/sample1.html");
+$doc = new WebScraper("<!DOCTYPE html><html><body>".$html."</body></html>");
 
 $doc->Q("h1, h2, p a");
 
@@ -157,6 +157,7 @@ To print the detected information we can use the `text` function, check the foll
 ### Html
 
 ```html
+
 <h1>1st h1</h1>
 <h1>2nd h1</h1>
 <h2>Heading 2</h2>
@@ -170,18 +171,21 @@ To print the detected information we can use the `text` function, check the foll
 
 ```php
 include "path/webscraper.php";
-$doc = new WebScraper("samples/headings.html");
+$doc = new WebScraper("<!DOCTYPE html><html><body>".$html."</body></html>");
 
-echo $doc->Q("h1[2]::text")->text();
-
-// or 
-
-echo $doc->Q("h1[2]")->text();
+echo $doc->Q("h1[2]::text")->echo();
 
 ```
 
 ### Output
 
 ```html 
+
 2nd h1
+
 ```
+As you can see, the `echo` function is multifunctional, it can be used to echo a document or nodes.
+
+### `::attributes` selector
+
+When we want to make a list of attributes or perhaps delete all attributes of a specific tag, we can use the selector `::attributes` to access them.
