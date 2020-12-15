@@ -25,69 +25,10 @@ $doc->echo();
 
 ```
 
-Simple as that!
-
-But for now, let's start with the example page in our source code, which looks like this: 
-
-```html
-<!DOCTYPE html>
-<html lang="en">
-    <head>
-        <meta charset="utf-8">
-        <title>Sample HTML Page</title>
-        <link rel="stylesheet" href="css/styles.css?v=1.0">
-        <style>
-            body {
-              font-family: Arial, Helvetica, sans-serif;
-              margin: 0;
-            }
-
-            html {
-              box-sizing: border-box;
-            }
-
-            *, *:before, *:after {
-              box-sizing: inherit;
-            }
-            .about-section {
-              padding: 50px;
-              text-align: center;
-              background-color: #474e5d;
-              color: white;
-            }
-        </style>
-    </head>
-    <body>
-        <section>
-            <h1>Hello World!</h1>
-            <p>Some text about who we are and what we do.</p>
-            <p>Resize the browser window to see that this page is responsive by the way.</p>
-        </section>
-        <h1>HTML Ipsum Presents</h1>
-        <p><strong>Pellentesque habitant morbi tristique</strong> senectus et netus 
-            et malesuada fames ac turpis egestas. Vestibulum tortor quam, feugiat vitae, 
-            ultricies eget, tempor sit amet, ante. Donec eu libero sit amet quam egestas 
-            semper. <em>Aenean ultricies mi vitae est.</em> Mauris placerat eleifend leo. 
-            Quisque sit amet est et sapien ullamcorper pharetra.
-            <a href="#">Donec non enim</a> in turpis pulvinar 
-            facilisis. Ut felis.</p>
-        <h2>Header Level 2</h2>
-        <ol>
-          <li>Lorem ipsum dolor sit amet, consectetuer adipiscing elit.</li>
-          <li>Aliquam tincidunt mauris eu risus.</li>
-        </ol>
-        <h3>Header Level 3</h3>
-        <!-- this is a comment -->
-        <script type="text/javascript">
-            // code
-        </script>
-    </body>
-</html>
-```
-And it's in the `test/examplepage.html` directory.
+Simple as that! But for now, let's start with the sample pages in the `samples` folder, in order to give examples.
 
 ## Start
-Click the links to start learning:
+Click on the links below to navigate between sections and start learning:
 
 |Routines|
 |------------|
@@ -109,26 +50,140 @@ Click the links to start learning:
 | [`replaceText()` and `replaceTextCallback()` function](#replaceText-&-replaceTextCallback-routine) |
 
 
-## `query` routine
-We have already talked about it previously
-## `return` routine
-## `echo` routine
-We have already talked about it previously
-## `return` routine
-## `echo` routine
-We have already talked about it previously
-## `return` routine## `echo` routine
-We have already talked about it previously
-## `return` routine## `echo` routine
-We have already talked about it previously
-## `return` routine## `echo` routine
-We have already talked about it previously
-## `return` routine## `echo` routine
-We have already talked about it previously
-## `return` routine## `echo` routine
-We have already talked about it previously
-## `return` routine## `echo` routine
-We have already talked about it previously
-## `return` routine## `echo` routine
-We have already talked about it previously
-## `return` routine
+## How do I select nodes within my HTML document?
+For this, we use `query`, or its simplified version: `Q`, as its parameter we can pass in a string with the CSS query we want, for example: `$doc->Q("div.box > span#tooltip")`. That means: "find a `span` tag whose `id` value is 'tooltip' within a div whose `class` name is 'box'". Just like normal CSS.
+
+### Html
+
+```html
+<h1>One morning, when Gregor Samsa woke from troubled 
+dreams.</h1>
+
+<p>One morning, when Gregor Samsa woke from troubled 
+dreams, he found himself transformed in his bed into 
+a horrible vermin. He lay on his armour-like back, 
+and if he lifted his head a little he could see his 
+brown belly, slightly domed and divided by arches into 
+stiff sections.
+<a class="external ext" href="#">link</a> waved about 
+helplessly as he looked. "What's happened to me? " he 
+thought. It wasn't a dream. His room, a proper human 
+room although a little too small, lay peacefully 
+between its four familiar walls.</p>
+
+<h2>The bedding was hardly able to cover it.</h2>
+<ul>
+    <li>Lorem ipsum dolor sit amet consectetuer.</li>
+    <li>Aenean commodo ligula eget dolor.</li>
+    <li>Aenean massa cum sociis natoque penatibus.</li>
+</ul>
+
+<p>It showed a lady fitted out with a fur hat and fur 
+boa who sat upright.</p>
+```
+
+### Php
+
+```php
+include "path/webscraper.php";
+$doc = new WebScraper("samples/sample1.html");
+
+$doc->Q("ul li[2]");
+
+// or
+
+$doc->query("ul li[2]");
+
+```
+
+### Output
+
+```html 
+<li>Aenean commodo ligula eget dolor.</li>
+```
+
+It selects the second item in the list. We can also do the following to select multiple elements:
+
+### Php
+
+```php
+include "path/webscraper.php";
+$doc = new WebScraper("samples/sample1.html");
+
+$doc->Q("h1, h2, p a");
+
+```
+
+### Output
+
+```html 
+
+<h1>One morning, when Gregor Samsa woke from troubled 
+dreams.</h1>
+<h2>The bedding was hardly able to cover it.</h2>
+<a class="external ext" href="#">link</a>
+
+```
+
+Note that, in the last part: `p a`, we are referring to some `a` tag inside a (any) `p` tag. You are certainly familiar with this all.
+However, note that `query` by itself does not return anything, it needs a complement, for example: `$doc->query("something")->someFunction()`.
+
+## Extra CSS selectors: `::text`, `::attributes` and `::comment`
+
+When we are parsing documents, we may need to select texts within `p` tags, or manipulate or confirm the attributes of a specific tag, or even delete all HTML comments in a document, such as `<!-- this is an example comment -->`.
+
+When we are parsing documents, we may need to select texts within `p` tags, or manipulate or confirm the attributes of a specific tag, or delete all HTML comments in a document, such as` <! - this is an example comment -> `.
+
+That's why we have the triad: `::text`,` ::attributes` and `::comment` - but how can we use them?
+
+### `::text` selector
+
+We can select all the text nodes of a given document like this:
+
+```php
+
+$doc->Q("::text");
+
+```
+
+Or we can select the text inside a specific tag - like `h1`:
+
+```php
+
+$doc->Q("h1::text");
+
+```
+
+To print the detected information we can use the `text` function, check the following example:
+
+### Html
+
+```html
+<h1>1st h1</h1>
+<h1>2nd h1</h1>
+<h2>Heading 2</h2>
+<h3>Heading 3</h3>
+<h4>Heading 4</h4>
+<h5>Heading 5</h5>
+
+```
+
+### Php
+
+```php
+include "path/webscraper.php";
+$doc = new WebScraper("samples/headings.html");
+
+echo $doc->Q("h1[2]::text")->text();
+
+// or 
+
+echo $doc->Q("h1[2]")->text();
+
+```
+
+### Output
+
+```html 
+2nd h1
+```
