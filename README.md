@@ -132,8 +132,6 @@ However, note that `query` by itself does not return anything, it needs a comple
 
 When we are parsing documents, we may need to select texts within `p` tags, or manipulate or confirm the attributes of a specific tag, or even delete all HTML comments in a document, such as `<!-- this is an example comment -->`.
 
-When we are parsing documents, we may need to select texts within `p` tags, or manipulate or confirm the attributes of a specific tag, or delete all HTML comments in a document, such as` <! - this is an example comment -> `.
-
 That's why we have the triad: `::text`,` ::attributes` and `::comment` - but how can we use them?
 
 ### `::text` selector
