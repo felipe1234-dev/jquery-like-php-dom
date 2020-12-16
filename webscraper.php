@@ -1,4 +1,4 @@
-class DocParser {
+class WebScraper {
     public $obj, $dom, $xpath;
 
     public function __construct($param) {
