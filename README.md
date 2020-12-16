@@ -27,39 +27,6 @@ $doc->echo();
 
 Simple as that! 
 
-## Start 
-
-<!-- TABLE OF CONTENTS -->
-<details open="open">
-    <summary>Table of Contents</summary>
-    <ol>
-        <li>
-            <a href="#introduction">About The Project</a>
-        </li>
-        <li>
-            <a href="#getting-started">Getting Started</a>
-        </li>
-        <li>
-            <a href="#usage">Usage</a>
-        </li>
-        <li>
-            <a href="#roadmap">Roadmap</a>
-        </li>
-        <li>
-            <a href="#contributing">Contributing</a>
-        </li>
-        <li>
-            <a href="#license">License</a>
-        </li>
-        <li>
-            <a href="#contact">Contact</a>
-        </li>
-        <li>
-            <a href="#acknowledgements">Acknowledgements</a>
-        </li>
-    </ol>
-</details>
-
 ## How do I select nodes within my HTML document?
 For this, we use `query`, or its simplified version: `Q`, as its parameter we can pass in a string with the CSS query we want, for example: `$doc->Q("div.box > span#tooltip")`. 
 
@@ -118,39 +85,268 @@ Note that `query` by itself does not return anything, it needs a complement, for
 
 When we are parsing documents, we may need to select texts within `p` tags, or manipulate or confirm the attributes of a specific tag, or even delete all HTML comments in a document, such as `<!-- this is an example comment -->`.
 
-That's why we have the triad: `::text`, `::attributes` and `::comment` - but how can we use them?
+That's why we have the triad: `::text`, `::attributes` and `::comment`.
 
-### `::text` selector
+<!-- TABLE OF CONTENTS -->
+<details open="open">
+    <summary>Table of Contents</summary>
+    <ol>
+        <li>
+            <a href="#introduction">About The Project</a>
+        </li>
+        <li>
+            <a href="#getting-started">Getting Started</a>
+        </li>
+        <li>
+            <a href="#usage">Usage</a>
+        </li>
+        <li>
+            <a href="#roadmap">Roadmap</a>
+        </li>
+        <li>
+            <a href="#contributing">Contributing</a>
+        </li>
+        <li>
+            <a href="#license">License</a>
+        </li>
+        <li>
+            <a href="#contact">Contact</a>
+        </li>
+        <li>
+            <a href="#acknowledgements">Acknowledgements</a>
+        </li>
+    </ol>
+</details>
 
-We can select all the text nodes of a given document like this:
+## `wrap` and `unwrap`
 
-```php
+Wrap or unwrap node elements with other node elements.
 
-$doc->Q("::text");
-
-```
-
-Or we can select the text inside a specific tag - like `h1`:
-
-```php
-
-$doc->Q("h1::text");
-
-```
-
-To print the detected information we can also use the `echo` function, check the following example:
-
-### Html
+### `$html` 
 
 ```html
+<img src="image.jpg" alt="JumpyDoggy" width="104" height="142">
+```
+### Php
 
-<h1>1st h1</h1>
-<h1>2nd h1</h1>
-<h2>Heading 2</h2>
-<h3>Heading 3</h3>
-<h4>Heading 4</h4>
-<h5>Heading 5</h5>
+```php
+include "path/webscraper.php";
+$doc = new WebScraper("<!DOCTYPE html><html><body>".$html."</body></html>");
 
+$doc->Q("img[src='image.jpg']")->wrap("<figure></figure>");
+// also possible: $doc->Q("img[src='image.jpg']")->wrap("figure");
+
+$doc->echo();
+```
+### Output 
+
+```html
+<figure>
+    <img src="image.jpg" alt="JumpyDoggy" width="104" height="142">
+</figure>
+```
+You may also give the image wrapper attributes, like `style`, `class`, `id`, etc., like this: 
+
+### Php
+
+```php
+include "path/webscraper.php";
+$doc = new WebScraper("<!DOCTYPE html><html><body>".$html."</body></html>");
+
+$doc->Q("img[src='image.jpg']")->wrap("<figure class='img-wrapper' style='width: 100px; height: 100px;'></figure>");
+
+$doc->echo();
+```
+### Output 
+
+```html
+<figure class="img-wrapper" style="width: 100px; height: 100px;">
+    <img src="image.jpg" alt="JumpyDoggy" width="104" height="142">
+</figure>
+```
+In case you don't want it wrapped anymore, run it:
+
+```php
+include "path/webscraper.php";
+$doc = new WebScraper("<!DOCTYPE html><html><body>".$html."</body></html>");
+
+$doc->Q("img[src='image.jpg']")->unwrap();
+
+$doc->echo();
+```
+### Output 
+
+```html
+<img src="image.jpg" alt="JumpyDoggy" width="104" height="142">
+```
+## `addClass` and `removeClass`
+
+Add and remove class to DOM elements.
+
+### `$html` 
+
+```html
+<h1>Give me a title class</h1>
+<h2 class="title">Hey! My class should be "subtitle"!</h2>
+```
+### Php
+
+```php
+include "path/webscraper.php";
+$doc = new WebScraper("<!DOCTYPE html><html><body>".$html."</body></html>");
+
+$doc->Q("h1")->addClass("title");
+$doc->Q("h2")->removeClass("title");
+$doc->Q("h2")->addClass("subtitle");
+
+$doc->echo();
+```
+### Output 
+
+```html
+<h1 class="title">Give me a title class</h1>
+<h2 class="subtitle">Hey! My class should be "subtitle"!</h2>
+```
+
+## `setAttribute` and `removeAttribute`
+
+In case `addClass` and `removeClass` are not enough (and probably are not), you can use these both functions: `setAttribute` and `removeAttribute`.
+
+### `$html` 
+
+```html
+<form action="#" method="post">
+    <div>
+         <label for="name">Text Input:</label>
+         <input type="text" name="name" id="age" value="" tabindex="1" />
+    </div>
+</form>
+<button>submit</button>
+```
+### Php
+
+```php
+include "path/webscraper.php";
+$doc = new WebScraper("<!DOCTYPE html><html><body>".$html."</body></html>");
+
+$doc->Q("form input[name='name']")->setAttribute("id", "name");
+$doc->Q("form input[name='name']")->removeAttribute("tabindex");
+$doc->Q("button")->setAttribute("onclick", "document.querySelector('form').submit()");
+
+$doc->echo();
+```
+### Output 
+
+```html
+<form action="#" method="post">
+    <div>
+         <label for="name">Text Input:</label>
+         <input type="text" name="name" id="name" value=""/>
+    </div>
+</form>
+<button onclick="document.querySelector('form').submit()">submit</button>
+```
+
+## `html` and `text`
+
+`html` and `text` differ little, both can be used to print or return inner elements of tags, however, `text` can only be used to print/return inner text while `html` is able to print/return both html and inner text.
+
+### `$html` 
+
+```html
+<nav>
+    <ul>
+        <li><a href="#">Home</a></li>
+        <li><a href="#">About</a></li>
+        <li><a href="#">Clients</a></li>
+        <li><a href="#">Contact Us</a></li>
+    </ul>
+</nav>
+```
+### Php
+
+```php
+include "path/webscraper.php";
+$doc = new WebScraper("<!DOCTYPE html><html><body>".$html."</body></html>");
+
+echo "Result from html(): \n";
+echo $doc->Q("nav")->html();
+
+echo "\n\n";
+
+echo "Result from text(): \n";
+echo $doc->Q("nav")->text();
+```
+### Output 
+
+```html
+Result from html(): 
+
+    <ul>
+        <li><a href="#">Home</a></li>
+        <li><a href="#">About</a></li>
+        <li><a href="#">Clients</a></li>
+        <li><a href="#">Contact Us</a></li>
+    </ul>
+
+
+Result from text(): 
+
+    
+        Home
+        About
+        Clients
+        Contact Us
+    
+
+```
+`echo $doc->Q("body")->text()` is a good idea in case you want a plaintext function. 
+
+`text` and `html` can also manipulate the content inside them:
+
+```php
+include "path/webscraper.php";
+$doc = new WebScraper("<!DOCTYPE html><html><body>".$html."</body></html>");
+
+$doc->Q("nav")->html('
+    <ul>
+        <li><a href="home.html">Home</a></li>
+        <li><a href="about.html">About</a></li>
+        <li><a href="clients.html">Clients</a></li>
+        <li><a href="gallery.html"></a></li>
+        <li><a href="plans.html"></a></li>
+        <li><a href="contact.html">Contact Us</a></li>
+    </ul>
+');
+$doc->Q("nav ul li a[href='gallery.html']")->text("Gallery");
+$doc->Q("nav ul li a[href='plans.html']")->text("Plans of Service");
+
+$doc->echo();
+```
+### Output 
+```html
+<nav>
+    <ul>
+        <li><a href="home.html">Home</a></li>
+        <li><a href="about.html">About</a></li>
+        <li><a href="clients.html">Clients</a></li>
+        <li><a href="gallery.html">Gallery</a></li>
+        <li><a href="plans.html">Plans of Service</a></li>
+        <li><a href="contact.html">Contact Us</a></li>
+    </ul>
+</nav>
+```
+
+## `appendHtml` and `prependHtml`
+
+`appendHtml` inserts html at the **end** of a DOM element, while `prependHtml` inserts html at the start.
+
+### `$html` 
+
+```html
+<div id="append"></div>
+<br/>
+<div id="prepend"></div>
 ```
 
 ### Php
@@ -159,54 +355,36 @@ To print the detected information we can also use the `echo` function, check the
 include "path/webscraper.php";
 $doc = new WebScraper("<!DOCTYPE html><html><body>".$html."</body></html>");
 
-$doc->Q("h1[2]::text")->echo();
+$i = 0;
+while ($i < 5) {
+    $i++;
+    $doc->Q("#append")->appendHtml("<p id='".$i."'>".$i."</p>");
+}
 
+$j = 0;
+while ($j < 5) {
+    $j++;
+    $doc->Q("#prepend")->prependHtml("<p id='".$j."'>".$j."</p>");
+}
+
+$doc->echo();
 ```
-
-### Output
-
-```html 
-
-2nd h1
-
-```
-As you can see, the `echo` function is multifunctional, it can be used to echo a document or nodes.
-
-### `::attributes` selector
-
-When we want to make a list of attributes or perhaps delete all attributes of a specific tag, we can use the selector `::attributes` to access them.
-
-**Deleting attributes**
-
-```php
-include "path/webscraper.php";
-$doc = new WebScraper("<!DOCTYPE html><html><body>".$html."</body></html>");
-
-$doc->Q("h1::attributes")->delete();
-
-// or 
-
-$doc->Q("::attributes")->delete();
-// deletes all attributes of all tags
-
-```
-
-And here's how you can print the attributes of an element:
-
-```php
-include "path/webscraper.php";
-$doc = new WebScraper("<!DOCTYPE html><html><body>".$html."</body></html>");
-
-$doc->Q("h1::attributes")->echo();
-
-```
-#### Output
+### Output 
 
 ```html
-
-h1[attribute1] => "value1"
-h1[attribute2] => "value2"
-
+<div id="append">
+    <p id="1">1</p>
+    <p id="2">2</p>
+    <p id="3">3</p>
+    <p id="4">4</p>
+    <p id="5">5</p>
+</div>
+<br/>
+<div id="prepend">
+    <p id="5">5</p>
+    <p id="4">4</p>
+    <p id="3">3</p>
+    <p id="2">2</p>
+    <p id="1">1</p>
+</div>
 ```
-### `::comment` selector
-
