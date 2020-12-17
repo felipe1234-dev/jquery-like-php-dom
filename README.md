@@ -388,3 +388,150 @@ $doc->echo();
     <p id="1">1</p>
 </div>
 ```
+
+## `hasClass` and `hasAttr`
+
+These functions are built to test if an element has a specific class/attribute or not. If it does, it returns true. 
+
+### `$html` 
+
+```html
+<p class="rice">Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas.</p>
+<p data-target="lord">Donec eu libero sit amet quam egestas semper. Aenean ultricies mi vitae est. Mauris placerat eleifend leo.</p>
+```
+
+### Php
+
+```php
+include "path/webscraper.php";
+$doc = new WebScraper("<!DOCTYPE html><html><body>".$html."</body></html>");
+
+if ($doc->Q("p[1]")->hasClass("rice")) {
+    echo "p[1] has class \"rice\": true \n\n";
+}
+
+if ($doc->Q("p[2]")->hasAttr("data-target", "lady")) {
+    echo "p[2] has attribute \"data-target\" with value \"lady\": false";
+}
+
+$doc->echo();
+```
+### Output 
+
+```html
+p[1] has class "rice": true
+
+p[2] has attribute "data-target" with value "lady": false
+```
+
+## `delete` 
+
+The delete function is used to delete DOM nodes. 
+It accepts a boolean as a parameter: `true` or `false`, `true` tells it to keep its inner content (be it text or html nodes), while `false` tells it the opposite. The default parameter is set to `true`.
+
+### `$html` 
+
+```html
+<head>
+    <style>
+        code {
+          font-family: Consolas,"courier new";
+          color: crimson;
+          background-color: #f1f1f1;
+          padding: 2px;
+          font-size: 105%;
+        }
+    </style>
+</head>
+<body>
+
+    <p>The HTML <code>button</code> tag defines a clickable button.</p>
+    <p>The CSS <code>background-color</code> property defines the background color of an element.</p>
+
+</body>
+```
+
+### Php
+
+```php
+include "path/webscraper.php";
+$doc = new WebScraper("<!DOCTYPE html><html>".$html."</html>");
+
+$doc->Q("style")->delete();
+
+$doc->echo();
+```
+### Output 
+
+```html
+<head>
+</head>
+<body>
+
+    <p>The HTML <code>button</code> tag defines a clickable button.</p>
+    <p>The CSS <code>background-color</code> property defines the background color of an element.</p>
+
+</body>
+```
+In the other hand...
+
+```php
+include "path/webscraper.php";
+$doc = new WebScraper("<!DOCTYPE html><html>".$html."</html>");
+
+$doc->Q("p")->delete(true);
+
+$doc->echo();
+```
+
+Will output
+
+```html
+<head>
+</head>
+<body>
+
+    The HTML <code>button</code> tag defines a clickable button.
+    The CSS <code>background-color</code> property defines the background color of an element.
+
+</body>
+```
+
+
+## `iterate` and `replaceText` 
+
+These functions are built to test if an element has a specific class/attribute or not. If it does, it returns true. 
+
+### `$html` 
+
+```html
+<p>Far far away, behind the word mountains, far from the countries Vokalia and Consonantia, there live the blind texts. Separated they live in Bookmarksgrove right at the coast of the Semantics, a large language ocean. A small river named Duden flows by their place and supplies it with the necessary regelialia.</p>
+
+<p>It is a paradisematic country, in which roasted parts of sentences fly into your mouth. Even the all-powerful Pointing has no control about the blind texts it is an almost unorthographic life One day however a small line of blind text by the name of Lorem Ipsum decided to leave for the far World of Grammar.</p>
+
+<p>The Big Oxmox advised her not to do so, because there were thousands of bad Commas, wild Question Marks and devious Semikoli, but the Little Blind Text didn’t listen. She packed her seven versalia, put her initial into the belt and made herself on the way. When she reached the first hills of the Italic Mountains, she had a last view back on the skyline of her hometown Bookmarksgrove, the headline of Alphabet Village and the subline of her own road, the Line Lane. Pityful a rethoric question ran over her cheek, then</p>
+```
+
+### Php
+
+```php
+include "path/webscraper.php";
+$doc = new WebScraper("<!DOCTYPE html><html><body>".$html."</body></html>");
+
+if ($doc->Q("p[1]")->hasClass("rice")) {
+    echo "p[1] has class \"rice\": true \n\n";
+}
+
+if ($doc->Q("p[2]")->hasAttr("data-target", "lady")) {
+    echo "p[2] has attribute \"data-target\" with value \"lady\": false";
+}
+
+$doc->echo();
+```
+### Output 
+
+```html
+p[1] has class "rice": true
+
+p[2] has attribute "data-target" with value "lady": false
+```
