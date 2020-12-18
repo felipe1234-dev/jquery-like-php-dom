@@ -4,29 +4,33 @@ Most of the PHP parsers I encountered in the past were either too complicated, *
 
 # pQuery Web Scraper tutorial
 ## Getting started
-To start coding with pQuery, just include the main php file and create a Web Scraper class object and send the parameters through the constructor, it will know if you sent a URL or an HTML string:
-
+To start coding with pQuery simply include the main PHP file in this repository and initilize an object class like this:
+```php
+// include webscraper.php file
+include "path/webscraper.php";
+// create a new object
+$doc = new WebScraper();
+```
+In case you want to load a string containing your HTML or XML:
+```php
+$doc->loadHTML($html);
+// or 
+$doc->loadXML($xml);
+```
+And when you finish parsing your doc you can "echo" your parsed web page by using the `echo` function:
+```php
+$doc->echo();
+```
+But, for now, we will be using this initialization:
 ```php
 include "path/webscraper.php";
+$doc = new WebScraper();
+$doc->loadHTML($html);
 
-$doc = new WebScraper("https://www.examplelink.com");
-
-// or 
-
-$doc = new WebScraper("<!DOCTYPE html><html><body>".$yourhtml."</body></html>");
-
-// both work
-```
-And then, you can "echo" your parsed web page by using the `echo` function:
-
-```php
+// code
 
 $doc->echo();
-
 ```
-
-Simple as that! 
-
 ## How do I select nodes within my HTML document?
 For this, we use `query`, or its simplified version: `Q`, as its parameter we can pass in a string with the CSS query we want, for example: `$doc->Q("div.box > span#tooltip")`. 
 
@@ -131,7 +135,8 @@ Wrap or unwrap node elements with other node elements.
 
 ```php
 include "path/webscraper.php";
-$doc = new WebScraper("<!DOCTYPE html><html><body>".$html."</body></html>");
+$doc = new WebScraper();
+$doc->loadHTML($html);
 
 $doc->Q("img[src='image.jpg']")->wrap("<figure></figure>");
 // also possible: $doc->Q("img[src='image.jpg']")->wrap("figure");
@@ -151,7 +156,8 @@ You may also give the image wrapper attributes, like `style`, `class`, `id`, etc
 
 ```php
 include "path/webscraper.php";
-$doc = new WebScraper("<!DOCTYPE html><html><body>".$html."</body></html>");
+$doc = new WebScraper();
+$doc->loadHTML($html);
 
 $doc->Q("img[src='image.jpg']")->wrap("<figure class='img-wrapper' style='width: 100px; height: 100px;'></figure>");
 
@@ -168,7 +174,8 @@ In case you don't want it wrapped anymore, run it:
 
 ```php
 include "path/webscraper.php";
-$doc = new WebScraper("<!DOCTYPE html><html><body>".$html."</body></html>");
+$doc = new WebScraper();
+$doc->loadHTML($html);
 
 $doc->Q("img[src='image.jpg']")->unwrap();
 
@@ -193,7 +200,8 @@ Add and remove class to DOM elements.
 
 ```php
 include "path/webscraper.php";
-$doc = new WebScraper("<!DOCTYPE html><html><body>".$html."</body></html>");
+$doc = new WebScraper();
+$doc->loadHTML($html);
 
 $doc->Q("h1")->addClass("title");
 $doc->Q("h2")->removeClass("title");
@@ -227,7 +235,8 @@ In case `addClass` and `removeClass` are not enough (and probably are not), you 
 
 ```php
 include "path/webscraper.php";
-$doc = new WebScraper("<!DOCTYPE html><html><body>".$html."</body></html>");
+$doc = new WebScraper();
+$doc->loadHTML($html);
 
 $doc->Q("form input[name='name']")->setAttribute("id", "name");
 $doc->Q("form input[name='name']")->removeAttribute("tabindex");
@@ -267,7 +276,8 @@ $doc->echo();
 
 ```php
 include "path/webscraper.php";
-$doc = new WebScraper("<!DOCTYPE html><html><body>".$html."</body></html>");
+$doc = new WebScraper();
+$doc->loadHTML($html);
 
 echo "Result from html(): \n";
 echo $doc->Q("nav")->html();
@@ -306,7 +316,8 @@ Result from text():
 
 ```php
 include "path/webscraper.php";
-$doc = new WebScraper("<!DOCTYPE html><html><body>".$html."</body></html>");
+$doc = new WebScraper();
+$doc->loadHTML($html);
 
 $doc->Q("nav")->html('
     <ul>
@@ -353,7 +364,8 @@ $doc->echo();
 
 ```php
 include "path/webscraper.php";
-$doc = new WebScraper("<!DOCTYPE html><html><body>".$html."</body></html>");
+$doc = new WebScraper();
+$doc->loadHTML($html);
 
 $i = 0;
 while ($i < 5) {
@@ -404,7 +416,8 @@ These functions are built to test if an element has a specific class/attribute o
 
 ```php
 include "path/webscraper.php";
-$doc = new WebScraper("<!DOCTYPE html><html><body>".$html."</body></html>");
+$doc = new WebScraper();
+$doc->loadHTML($html);
 
 if ($doc->Q("p[1]")->hasClass("rice")) {
     echo "p[1] has class \"rice\": true \n\n";
@@ -455,7 +468,8 @@ It accepts a boolean as a parameter: `true` or `false`, `true` tells it to keep 
 
 ```php
 include "path/webscraper.php";
-$doc = new WebScraper("<!DOCTYPE html><html>".$html."</html>");
+$doc = new WebScraper();
+$doc->loadHTML($html);
 
 $doc->Q("style")->delete();
 
@@ -477,7 +491,8 @@ In the other hand...
 
 ```php
 include "path/webscraper.php";
-$doc = new WebScraper("<!DOCTYPE html><html>".$html."</html>");
+$doc = new WebScraper();
+$doc->loadHTML($html);
 
 $doc->Q("p")->delete(true);
 
@@ -516,7 +531,8 @@ These functions are built to test if an element has a specific class/attribute o
 
 ```php
 include "path/webscraper.php";
-$doc = new WebScraper("<!DOCTYPE html><html><body>".$html."</body></html>");
+$doc = new WebScraper();
+$doc->loadHTML($html);
 
 if ($doc->Q("p[1]")->hasClass("rice")) {
     echo "p[1] has class \"rice\": true \n\n";
