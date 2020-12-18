@@ -1,21 +1,30 @@
 class WebScraper {
-    public $obj, $dom, $xpath;
+    public $obj, $ishtml = null, $query, $dom, $xpath;
 
-    public function __construct($param) {
-        
+    public function __construct() {
         $this->dom = new DOMDocument();
-        libxml_use_internal_errors(true);
+    }
 
-        if(filter_var($param, FILTER_VALIDATE_URL)){
-            $this->dom->loadHTMLFile($param, LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD);
-        } else {
-            $this->dom->loadXML($param);
-        }
-        
+    public function loadHTMLFile($url){
+        libxml_use_internal_errors(true);
+        $this->dom->loadHTMLFile($url, LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD);
         libxml_use_internal_errors(false);
         $this->xpath = new DOMXPath($this->dom);
+        $this->ishtml = true;
+    }
+
+    public function loadXML($XML){
+        $this->dom->loadXML($XML);
+        $this->xpath = new DOMXPath($this->dom);
+        $this->ishtml = false;
     }
     
+    public function loadHTML($HTML){
+        $this->dom->loadHTML($HTML);
+        $this->xpath = new DOMXPath($this->dom);
+        $this->ishtml = true;
+    }
+
     private function convert2XPath($query){
         $xpath = $query;
         
@@ -94,7 +103,16 @@ class WebScraper {
         return $xpath;
     }
     
-    public function Q($query, $root = false){
+    public function Q($query){
+        $this->query = $query; 
+        $query = $this->convert2XPath($query);
+        
+        $this->obj = $this->xpath->query("//$query");
+        
+        return $this;
+    }
+    
+    private function _($query){
         $query = $this->convert2XPath($query);
         
         $this->obj = $this->xpath->query("//$query");
@@ -103,6 +121,7 @@ class WebScraper {
     }
     
     public function query($query){
+        $this->query = $query; 
         $query = $this->convert2XPath($query);
         
         $this->obj = $this->xpath->query("//$query");
@@ -113,6 +132,13 @@ class WebScraper {
     public function setAttribute($attr, $value){
         foreach ($this->obj as $item){
             $item->setAttribute("$attr", "$value");
+        }
+        $this->obj = null;
+    }
+
+    public function removeAttribute($attr){
+        foreach ($this->obj as $item){
+            $item->removeAttribute("$attr");
         }
         $this->obj = null;
     }
@@ -182,20 +208,32 @@ class WebScraper {
         $this->obj = null;
     }
     
+    public function prependHtml($html){
+        
+        $dom = new DOMDocument();
+        $dom->loadXML($html);
+        $xpath = new DOMXPath($dom);
+            
+        foreach($this->obj as $item){
+            foreach($xpath->query("//*") as $contentNode){
+                $contentNode = $this->dom->importNode($contentNode, true);
+                $item->insertBefore($contentNode, $item->firstChild);
+            }
+        }
+        
+        $this->obj = null;
+    }
+    
     public function delete($keepinner = false){
         
         foreach($this->obj as $item){
-            if (!$item->parentNode->hasAttribute($item->nodeName)){
-                if (!$keepinner){
-                    $item->parentNode->removeChild($item);
-                } else {
-                    while ($item->firstChild instanceof DOMNode) {
-                        $item->parentNode->insertBefore($item->firstChild, $item);
-                    }
-                    $item->parentNode->removeChild($item);
-                }
+            if (!$keepinner){
+                $item->parentNode->removeChild($item);
             } else {
-                $item->parentNode->removeAttribute($item->nodeName);
+                while ($item->firstChild instanceof DOMNode) {
+                    $item->parentNode->insertBefore($item->firstChild, $item);
+                }
+                $item->parentNode->removeChild($item);
             }
         }
         
@@ -212,9 +250,8 @@ class WebScraper {
         $this->obj = null;
     }
     
-    public function wrap($html){
-        $tag = preg_replace("/<([\w\d]+).*><\/\\1>/", "$1", $html);
-
+    private function breakUp($tag, &$html, &$keys, &$vals, &$attrs){
+        
 		$html = preg_replace_callback(
         	'/([^=<>\s]*)=[\'|"]([^=]*)[\'|"]/', 
             function($m){
@@ -228,8 +265,6 @@ class WebScraper {
             $html
         );
         
-        $keys = array();
-        $vals = array();
         $lines = explode("]", $html);
         
         foreach($lines as $index => $value){
@@ -241,6 +276,17 @@ class WebScraper {
             array_push($vals, $arr[1]);
         }
         $attrs = array_combine($keys, $vals);
+    }
+    
+    public function wrap($html){
+        $attrs = array();
+        $keys = array();
+        $vals = array();
+            
+        if (preg_match("/<([\w\d]+).*>[^<>]*<\/\\1>/", $html)){
+            $tag = preg_replace("/<([\w\d]+).*>[^<>]*<\/\\1>/", "$1", $html);
+            $this->breakUp($tag, $html, $keys, $vals, $attrs);
+        }
         
         foreach($this->obj as $item){
             $wrapper = $this->dom->createElement("$tag");
@@ -255,7 +301,7 @@ class WebScraper {
         $this->obj = null;
     }
     
-    public function delEmptyTags(){
+    public function removeEmptyTags(){
         $query = '//*[not(*) and not(@*) and not(text()[normalize-space()])]';
         foreach($this->xpath->query("$query") as $tag){
             $tag->parentNode->removeChild($tag);
@@ -315,33 +361,12 @@ class WebScraper {
     }
     
     public function echo($format = true){
-        if (isset($this->obj)) {
-            $count = 1;
-            foreach ($this->obj as $item){
-                switch ($item->nodeName) {
-                    case '#text':
-                        echo $item->textContent;
-                        break;
-                    default:
-                        if ($item->parentNode->hasAttribute($item->nodeName)) {
-                            echo "$count. ".$item->parentNode->nodeName."[".$item->nodeName."] => \"".$item->textContent."\"\n";
-                        } else {    
-                            echo "$count. ".$item->nodeName."\n";
-                        }
-                        break;
-                }
-                $count++;
-            }
-            $this->obj = null;
-        } else {
-            $this->dom->formatOutput = $format;
-            printf ($this->dom->saveXML());
-        }
-    }
-    
-    public function return($format = true){
         $this->dom->formatOutput = $format;
-        return $this->dom->saveXML();
+        printf (($this->ishtml) ? (
+            $this->dom->saveHTML()
+        ) : (
+            $this->dom->saveXML()
+        ));
     }
     
     public function replaceText($pattern, $replace, $html = true){
@@ -354,8 +379,17 @@ class WebScraper {
             $item->textContent = $newtext;
         }
         
-        if($html){
-            $this->dom->loadHTML(html_entity_decode($this->dom->saveXML()));
+        if ($html) {
+            if ($this->ishtml) { 
+                $this->dom->loadHTML(
+                    html_entity_decode($this->dom->saveHTML())
+                );
+            } else {
+                $this->dom->loadXML(
+                    html_entity_decode($this->dom->saveXML())
+                );
+            }
+            $this->xpath = new DOMXPath($this->dom);
         }
     }
     
@@ -371,11 +405,20 @@ class WebScraper {
             $item->textContent = $newtext;
         }
         
-        if($html){
-            $this->dom->loadHTML(html_entity_decode($this->dom->saveXML()));
+        if ($html) {
+            if ($this->ishtml) { 
+                $this->dom->loadHTML(
+                    html_entity_decode($this->dom->saveHTML())
+                );
+            } else {
+                $this->dom->loadXML(
+                    html_entity_decode($this->dom->saveXML())
+                );
+            }
+            $this->xpath = new DOMXPath($this->dom);
         }
     }
-
+    
     public function hasClass($class){
         foreach($this->obj as $item){
             $classes = $item->getAttribute("class");
@@ -390,5 +433,13 @@ class WebScraper {
         }
         $bool = (preg_match("/".preg_quote($val)."/", $attrs)) ? true : false;
         return $bool;
+    }
+    
+    public function iterate($func){
+        $i = 1;
+        foreach($this->obj as $item){
+            $func($this->_($this->query."[$i]"));
+            $i++;
+        }
     }
 }
