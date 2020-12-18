@@ -4,7 +4,7 @@ Most of the PHP parsers I encountered in the past were either too complicated, *
 
 # pQuery Web Scraper tutorial
 ## Getting started
-To start coding with pQuery simply include the main PHP file in this repository and initilize an object class like this:
+To start coding with pQuery simply include the main PHP file in this repository and initialize an object class like this:
 ```php
 // include webscraper.php file
 include "path/webscraper.php";
@@ -409,7 +409,8 @@ These functions are built to test if an element has a specific class/attribute o
 
 ```html
 <p class="rice">Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas.</p>
-<p data-target="lord">Donec eu libero sit amet quam egestas semper. Aenean ultricies mi vitae est. Mauris placerat eleifend leo.</p>
+<p data-target="lord">Donec eu libero sit amet quam egestas semper. Aenean ultricies mi vitae est. Mauris 
+placerat eleifend leo.</p>
 ```
 
 ### Php
@@ -437,10 +438,10 @@ p[1] has class "rice": true
 p[2] has attribute "data-target" with value "lady": false
 ```
 
-## `delete` 
+## `remove` and `empty`
 
-The delete function is used to delete DOM nodes. 
-It accepts a boolean as a parameter: `true` or `false`, `true` tells it to keep its inner content (be it text or html nodes), while `false` tells it the opposite. The default parameter is set to `true`.
+The remove function is used to delete DOM nodes. 
+It accepts a boolean as a parameter: `true` or `false`, `true` tells it to keep its inner content (be it text or html nodes), while `false` tells it the opposite. The default parameter is set to `false`. While `empty` clears out inner HTML.
 
 ### `$html` 
 
@@ -471,7 +472,7 @@ include "path/webscraper.php";
 $doc = new WebScraper();
 $doc->loadHTML($html);
 
-$doc->Q("style")->delete();
+$doc->Q("style")->remove();
 
 $doc->echo();
 ```
@@ -494,7 +495,7 @@ include "path/webscraper.php";
 $doc = new WebScraper();
 $doc->loadHTML($html);
 
-$doc->Q("p")->delete(true);
+$doc->Q("p")->remove(true);
 
 $doc->echo();
 ```
@@ -511,9 +512,48 @@ Will output
 
 </body>
 ```
+An example with `empty`:
+```php
+include "path/webscraper.php";
+$doc = new WebScraper();
+$doc->loadHTML($html);
 
+$doc->Q("p[1]")->empty();
 
-## `iterate` and `replaceText` 
+$doc->echo();
+```
+```html
+<head>
+    <style>
+        code {
+          font-family: Consolas,"courier new";
+          color: crimson;
+          background-color: #f1f1f1;
+          padding: 2px;
+          font-size: 105%;
+        }
+    </style>
+</head>
+<body>
+
+    <p></p>
+    <p>The CSS <code>background-color</code> property defines the background color of an element.</p>
+
+</body>
+```
+## Tip
+
+You can delete all tags attributes by using the `::attributes` with the `remove` function:
+```php
+include "path/webscraper.php";
+$doc = new WebScraper();
+$doc->loadHTML($html);
+
+$doc->Q("::attributes")->remove();
+
+$doc->echo();
+```
+## `hasAttr` and `hasClass` 
 
 These functions are built to test if an element has a specific class/attribute or not. If it does, it returns true. 
 
@@ -550,4 +590,177 @@ $doc->echo();
 p[1] has class "rice": true
 
 p[2] has attribute "data-target" with value "lady": false
+```
+## `replaceText` and `replaceTextCallback`
+
+Both work similarly to the native `preg_replace` and `preg_replace_callback` functions, respectively. With the only differences being that you are able to choose between injecting HTML/XML or not, and that they are able to automatically iterate over all node texts or specific node texts inside a chosen tag, leaving the overall XML/HTML structure untouched. 
+
+### `$html` 
+```html
+
+<p>Nam finibus, neque et placerat condimentum, eros ligula mattis libero, eget aliquet nisi dolor nec ex. 
+Cras eleifend et nulla rutrum mattis. Etiam eu ipsum nisi. Sed non placerat ante. Aliquam urna tellus, 
+faucibus a risus quis, porta eleifend mauris. Nullam sagittis consequat faucibus. Nunc metus tortor, 
+blandit sit amet odio sit amet, iaculis pulvinar ipsum. Morbi in urna vel leo fringilla efficitur. 
+Vivamus eget rutrum sem. Phasellus posuere nunc sem, vel ultricies metus rutrum nec.</p>
+
+```
+### `replaceText` usage
+```php
+$doc->Q("something")->replaceText($pattern, $replace, true/false);
+// set true to allow HTML entity decoding
+// set false to disable HTML entity decoding
+// it is set to true by default
+```
+Use example:
+### Php
+```php
+include "path/webscraper.php";
+$doc = new WebScraper();
+$doc->loadHTML($html);
+
+$pattern = "/a/i";
+$replace = "$";
+$doc->Q("::text")->replaceText($pattern, $replace);
+
+$doc->echo();
+```
+### Output 
+```html
+<p>N$m finibus, neque et pl$cer$t condimentum, eros ligul$ m$ttis libero, eget $liquet nisi dolor nec ex. 
+Cr$s eleifend et null$ rutrum m$ttis. Eti$m eu ipsum nisi. Sed non pl$cer$t $nte. $liqu$m urn$ tellus, 
+f$ucibus $ risus quis, port$ eleifend m$uris. Null$m s$gittis consequ$t f$ucibus. Nunc metus tortor, 
+bl$ndit sit $met odio sit $met, i$culis pulvin$r ipsum. Morbi in urn$ vel leo fringill$ efficitur. 
+Viv$mus eget rutrum sem. Ph$sellus posuere nunc sem, vel ultricies metus rutrum nec.</p>
+```
+### `replaceTextCallback` usage
+```php
+$doc->Q("something")->replaceText($pattern, function($m){
+    # code
+    // $m is mandatory,
+    // $m is an array containing the matches 
+    // captured in parentheses in the pattern
+}, true/false);
+```
+
+Use example:
+### Php
+```php
+include "path/webscraper.php";
+$doc = new WebScraper();
+$doc->loadHTML($html);
+
+// simple Regex to match sentences 
+$pattern = '/([A-Z][^\.!?]*[\.!?]*(<br>)*)/';
+
+// First try: third parameter is set to true by default
+$doc->Q("::text")->replaceTextCallback($pattern, function($m){
+    static $id = 0;
+    $id++;
+    return "<label id=\"$id\">".$m[1]."</label>";
+    // it pretty much works the same way as a preg_replace_callback
+});
+
+echo "$html = true\n\n";
+$doc->echo()."\n\n\n";
+
+// Second try: third parameter was manually set to false
+$doc->Q("::text")->replaceTextCallback($pattern, function($m){
+    static $id = 0;
+    $id++;
+    return "<label id=\"$id\">".$m[1]."</label>";
+}, false);
+
+echo "$html = false\n\n";
+$doc->echo();
+```
+### Output 
+```html
+$html = true
+
+<p><label id="1">Nam finibus, neque et placerat condimentum, eros ligula mattis libero, eget aliquet nisi 
+dolor nec ex.</label> <label id="2">Cras eleifend et nulla rutrum mattis.</label> <label id="3">Etiam eu 
+ipsum nisi.</label> <label id="4">Sed non placerat ante.</label> <label id="5">Aliquam urna tellus, 
+faucibus a risus quis, porta eleifend mauris.</label> <label id="6">Nullam sagittis consequat faucibus.
+</label> <label id="7">Nunc metus tortor, blandit sit amet odio sit amet, iaculis pulvinar ipsum.</label> 
+<label id="8">Morbi in urna vel leo fringilla efficitur.</label> <label id="9">Vivamus eget rutrum sem.
+</label> <label id="10">Phasellus posuere nunc sem, vel ultricies metus rutrum nec.</label></p>
+
+
+$html = false
+
+<p>&lt;label id="1"&gt;Nam finibus, neque et placerat condimentum, eros ligula mattis libero, eget aliquet 
+nisi dolor nec ex.&lt;/label&gt; &lt;label id="2"&gt;Cras eleifend et nulla rutrum mattis.&lt;/label&gt; 
+&lt;label id="3"&gt;Etiam eu ipsum nisi.&lt;/label&gt; &lt;label id="4"&gt;Sed non placerat ante.
+&lt;/label&gt; &lt;label id="5"&gt;Aliquam urna tellus, faucibus a risus quis, porta eleifend mauris.
+&lt;/label&gt; &lt;label id="6"&gt;Nullam sagittis consequat faucibus.&lt;/label&gt; &lt;label id="7"&gt;
+Nunc metus tortor, blandit sit amet odio sit amet, iaculis pulvinar ipsum.&lt;/label&gt; &lt;label id="8"&gt;
+Morbi in urna vel leo fringilla efficitur.&lt;/label&gt; &lt;label id="9"&gt;Vivamus eget rutrum sem.
+&lt;/label&gt; &lt;label id="10"&gt;Phasellus posuere nunc sem, vel ultricies metus rutrum nec.
+&lt;/label&gt;</p>
+```
+
+## `replaceWith`
+
+The both replacing functions above work with node texts, while `replaceWith` replaces whole HTML/XML tags.
+
+## `count` 
+
+It counts occurrences of tag.
+
+### `$html`
+```html
+<h1>Didn't melt fairer keepsakes since Fellowship elsewhere.</h1>
+<p>Woodlands payment Osgiliath tightening. Barad-dur follow belly comforts tender tough bell? Many that live 
+deserve death. Some that die deserve life. Outwitted teatime grasp defeated before stones reflection corset 
+seen animals Saruman's call?</p>
+<h2>Tad survive ensnare joy mistake courtesy Bagshot Row.</h2>
+<p>Ligulas step drops both? You shall not pass! Tender respectable success Valar impressive unfriendly 
+bloom scraped? Branch hey-diddle-diddle pony trouble'll sleeping during jump Narsil.</p>
+<h3>North valor overflowing sort Iáve mister kingly money?</h3>
+<p>Curse you and all the halflings! Deserted anytime Lake-town burned caves balls. Smoked lthilien forbids 
+Thrain?</p>
+<ul>
+  <li>Adamant.</li>
+  <li>Southfarthing!</li>
+  <li>Witch-king.</li>
+  <li>Precious.</li>
+  <li>Gaffer's!</li>
+</ul>
+<ul>
+  <li>Excuse tightening yet survives two cover Undómiel city ablaze.</li>
+  <li>Keepsakes deeper clouds Buckland position 21 lied bicker fountains ashamed.</li>
+  <li>Women rippling cold steps rules Thengel finer.</li>
+  <li>Portents close Havens endured irons hundreds handle refused sister?</li>
+  <li>Harbor Grubbs fellas riddles afar!</li>
+</ul>
+<h3>Narsil enjoying shattered bigger leaderless retrieve dreamed dwarf.</h3>
+<p>Ravens wonder wanted runs me crawl gaining lots faster! Khazad-dum surprise baby season ranks. 
+ I bid you all a very fond farewell.</p>
+<ol>
+  <li>Narsil.</li>
+  <li>Elros.</li>
+  <li>Arwen Evenstar.</li>
+  <li>Maggot's?</li>
+  <li>Bagginses?</li>
+</ol>
+<ol>
+  <li>Concerning Hobbits l golf air fifth bell prolonging camp.</li>
+  <li>Grond humble rods nearest mangler.</li>
+  <li>Enormity Lórien merry gravy stayed move.</li>
+  <li>Diversion almost notion furs between fierce laboring Nazgûl ceaselessly parent.</li>
+  <li>Agree ruling um wasteland Bagshot Row expect sleep.</li>
+</ol>
+```
+### Php
+```php
+include "path/webscraper.php";
+$doc = new WebScraper();
+$doc->loadHTML($html);
+
+echo $doc->Q("li")->count();
+```
+### Output
+```html
+20
 ```
