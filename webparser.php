@@ -41,7 +41,7 @@ class WebScraper
         $xpath = $query;
         
         $xpath = preg_replace(
-             [
+        [
 		"/\n{1,}/",
 		"/\s{2,}/",
                 "/([^,])\s/", 
@@ -530,7 +530,7 @@ class WebScraper
 	: 
 	(
             $this->dom->saveXML()
-        );
+        ));
 		
     }
     
