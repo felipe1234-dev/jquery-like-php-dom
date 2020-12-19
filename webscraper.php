@@ -30,7 +30,7 @@ class WebScraper {
         $xpath = $query;
         
         $xpath = preg_replace(
-        	[
+             [
                 "/::/",
             	"/([^,])\s/", 
                 "/\/>\//",
@@ -225,16 +225,22 @@ class WebScraper {
         $this->obj = null;
     }
     
-    public function delete($keepinner = false){
+    public function remove($keepinner = false){
         
-        foreach($this->obj as $item){
-            if (!$keepinner){
-                $item->parentNode->removeChild($item);
-            } else {
-                while ($item->firstChild instanceof DOMNode) {
-                    $item->parentNode->insertBefore($item->firstChild, $item);
+        if ($this->query != "::attributes") {
+            foreach($this->obj as $item){
+                if (!$keepinner){
+                    $item->parentNode->removeChild($item);
+                } else {
+                    while ($item->firstChild instanceof DOMNode) {
+                        $item->parentNode->insertBefore($item->firstChild, $item);
+                    }
+                    $item->parentNode->removeChild($item);
                 }
-                $item->parentNode->removeChild($item);
+            }
+        } else {
+            foreach($this->obj as $attr){
+                $attr->parentNode->removeAttribute($attr->nodeName);
             }
         }
         
@@ -253,15 +259,15 @@ class WebScraper {
     
     private function breakUp($tag, &$html, &$keys, &$vals, &$attrs){
         
-		$html = preg_replace_callback(
-        	'/([^=<>\s]*)=[\'|"]([^=]*)[\'|"]/', 
+	$html = preg_replace_callback(
+            '/([^=<>\s]*)=[\'|"]([^=]*)[\'|"]/', 
             function($m){
             	return "{$m[1]} => {$m[2]}]";
             },
             $html
         );
         $html = preg_replace(
-        	["/$tag/", "/[^=]>/", "/</", "/\//"], 
+            ["/$tag/", "/[^=]>/", "/</", "/\//"], 
             "", 
             $html
         );
