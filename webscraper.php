@@ -1,3 +1,4 @@
+<?php 
 class WebScraper {
     public $obj, $ishtml = null, $query, $dom, $xpath;
 
@@ -443,3 +444,4 @@ class WebScraper {
         }
     }
 }
+?>
