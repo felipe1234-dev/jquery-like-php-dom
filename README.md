@@ -34,7 +34,7 @@ $doc->echo();
 ## How do I select nodes within my HTML document?
 For this, we use `query`, or its simplified version: `Q`, as its parameter we can pass in a string with the CSS query we want, for example: `$doc->Q("div.box > span#tooltip")`. 
 
-### Html
+### `$html`
 
 ```html
 <ul>
@@ -48,7 +48,8 @@ For this, we use `query`, or its simplified version: `Q`, as its parameter we ca
 
 ```php
 include "path/webscraper.php";
-$doc = new WebScraper("<!DOCTYPE html><html><body>".$html."</body></html>");
+$doc = new WebScraper();
+$doc->loadHTML($html);
 
 $doc->Q("ul li[2]");
 
@@ -70,7 +71,8 @@ It selects the second item in the list. We can also do the following to select m
 
 ```php
 include "path/webscraper.php";
-$doc = new WebScraper("<!DOCTYPE html><html><body>".$html."</body></html>");
+$doc = new WebScraper();
+$doc->loadHTML($html);
 
 $doc->Q("ul li[1], ul li[3]");
 
@@ -93,31 +95,40 @@ That's why we have the triad: `::text`, `::attributes` and `::comment`.
 
 <!-- TABLE OF CONTENTS -->
 <details open="open">
-    <summary>Table of Contents</summary>
+    <summary>List of Methods</summary>
     <ol>
         <li>
-            <a href="#introduction">About The Project</a>
+            <a href="#wrap-and-unwrap">wrap() and Unwrap()</a>
         </li>
         <li>
-            <a href="#getting-started">Getting Started</a>
+            <a href="#addclass-and-removeclass">addClass() and removeClass()</a>
         </li>
         <li>
-            <a href="#usage">Usage</a>
+            <a href="#setattribute-and-removeattribute">setAttribute() and removeAttribute()</a>
         </li>
         <li>
-            <a href="#roadmap">Roadmap</a>
+            <a href="#html-and-text">html() and text()</a>
         </li>
         <li>
-            <a href="#contributing">Contributing</a>
+            <a href="#appendhtml-and-prependhtml">appendHtml() and prependHtml()</a>
         </li>
         <li>
-            <a href="#license">License</a>
+            <a href="#hasclass-and-hasattr">hasClass() and hasAttr()</a>
         </li>
         <li>
-            <a href="#contact">Contact</a>
+            <a href="#remove-and-empty">remove() and empty()</a>
         </li>
         <li>
-            <a href="#acknowledgements">Acknowledgements</a>
+            <a href="#hasattr-and-hasclass">hasAttr() and hasClass()</a>
+        </li>
+        <li>
+            <a href="#replacetext-and-replacetextcallback">replaceText() and replaceTextCallback()</a>
+        </li>
+        <li>
+            <a href="#replacewith">replaceWith()</a>
+        </li>
+        <li>
+            <a href="#count">count()</a>
         </li>
     </ol>
 </details>
@@ -703,6 +714,25 @@ Morbi in urna vel leo fringilla efficitur.&lt;/label&gt; &lt;label id="9"&gt;Viv
 ## `replaceWith`
 
 The both replacing functions above work with node texts, while `replaceWith` replaces whole HTML/XML tags.
+
+### `$html`
+```html
+<p>Replace this with a header level 1 saying "I love cats' purr"</p>
+```
+### Php
+```php
+include "path/webscraper.php";
+$doc = new WebScraper();
+$doc->loadHTML($html);
+
+$doc->Q("p")->replaceWith("<h1>I love cats' purr</h1>");
+
+$doc->echo();
+```
+### Output 
+```html
+<h1>I love cats' purr</h1>
+```
 
 ## `count` 
 
