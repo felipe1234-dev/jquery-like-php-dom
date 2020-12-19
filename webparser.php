@@ -1,5 +1,5 @@
 <?php 
-class WebScraper 
+class WebParser
 {
 	
     private $obj;
