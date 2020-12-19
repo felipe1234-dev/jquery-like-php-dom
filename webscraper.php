@@ -1,5 +1,7 @@
 <?php 
-class WebScraper {
+class WebScraper 
+{
+	
     private $obj;
     private $ishtml = null; 
     private $query; 
