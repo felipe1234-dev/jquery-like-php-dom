@@ -42,6 +42,8 @@ class WebScraper
         
         $xpath = preg_replace(
              [
+		"/\n{1,}/",
+		"/\s{2,}/",
                 "/([^,])\s/", 
                 "/\/>\//",
                 
@@ -75,6 +77,8 @@ class WebScraper
                 "/^\[/",
             ],
             [
+		"",
+		" ",
                 "$1/",
                 "/",
                 
@@ -141,6 +145,20 @@ class WebScraper
         $this->obj = null;
     }
 	
+    
+    public function hasAttribute($attr, $val)
+    {
+	    
+        foreach($this->obj as $item)
+	{
+            $attrs = $item->getAttribute("$attr");
+        }
+	    
+        $bool = (preg_match("/".preg_quote($val)."/", $attrs)) ? true : false;
+        
+	return $bool;
+    }
+	
     public function href($url)
     {
 	    
@@ -197,19 +215,6 @@ class WebScraper
         $bool = (preg_match("/".preg_quote($class)."/", $classes)) ? true : false;
 	    
         return $bool;
-    }
-
-    public function hasAttr($attr, $val)
-    {
-	    
-        foreach($this->obj as $item)
-	{
-            $attrs = $item->getAttribute("$attr");
-        }
-	    
-        $bool = (preg_match("/".preg_quote($val)."/", $attrs)) ? true : false;
-        
-	return $bool;
     }
 
     public function html($html = null){
