@@ -1,12 +1,18 @@
 <?php 
 class WebScraper {
-    public $obj, $ishtml = null, $query, $dom, $xpath;
+    private $obj;
+    private $ishtml = null; 
+    private $query; 
+    private $dom; 
+    private $xpath;
 
-    public function __construct() {
+    public function __construct()
+    {
         $this->dom = new DOMDocument();
     }
 
-    public function loadHTMLFile($url){
+    public function loadHTMLFile($url)
+    {
         libxml_use_internal_errors(true);
         $this->dom->loadHTMLFile($url, LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD);
         libxml_use_internal_errors(false);
@@ -14,19 +20,22 @@ class WebScraper {
         $this->ishtml = true;
     }
 
-    public function loadXML($XML){
+    public function loadXML($XML)
+    {
         $this->dom->loadXML($XML);
         $this->xpath = new DOMXPath($this->dom);
         $this->ishtml = false;
     }
     
-    public function loadHTML($HTML){
+    public function loadHTML($HTML)
+    {
         $this->dom->loadHTML($HTML);
         $this->xpath = new DOMXPath($this->dom);
         $this->ishtml = true;
     }
 
-    private function convert2XPath($query){
+    private function convertToXPath($query)
+    {
         $xpath = $query;
         
         $xpath = preg_replace(
@@ -102,160 +111,250 @@ class WebScraper {
         return $xpath;
     }
     
-    public function Q($query){
+    public function query($query)
+    {
         $this->query = $query; 
-        $query = $this->convert2XPath($query);
+        $query = $this->convertToXPath($query);
         
         $this->obj = $this->xpath->query("//$query");
         
         return $this;
     }
     
-    private function _($query){
-        $query = $this->convert2XPath($query);
-        
-        $this->obj = $this->xpath->query("//$query");
-        
-        return $this;
-    }
-    
-    public function query($query){
-        $this->query = $query; 
-        $query = $this->convert2XPath($query);
-        
-        $this->obj = $this->xpath->query("//$query");
-        
-        return $this;
-    }
-    
-    public function setAttribute($attr, $value){
+    public function setAttribute($attr, $value)
+    {
         foreach ($this->obj as $item){
             $item->setAttribute("$attr", "$value");
         }
         $this->obj = null;
     }
 
-    public function removeAttribute($attr){
-        foreach ($this->obj as $item){
+    public function removeAttribute($attr)
+    {
+        foreach ($this->obj as $item)
+	{
             $item->removeAttribute("$attr");
         }
+	    
         $this->obj = null;
     }
+	
+    public function href($url)
+    {
+	    
+        foreach ($this->obj as $item) 
+	{
+            $item->setAttribute("href", "$url");
+        }
+    
+    }
 
-    public function addClass($class){
-        foreach ($this->obj as $item){
+    public function src($url)
+    {
+        
+	foreach ($this->obj as $item) 
+	{
+            $item->setAttribute("src", "$url");
+        }
+	  
+    }
+
+    public function addClass($class)
+    {
+	    
+        foreach ($this->obj as $item)
+	{
             $otherClasses = $item->getAttribute("class");
             $newClasses = trim("$otherClasses $class");
             $item->setAttribute("class", "$newClasses");
         }
+	    
         $this->obj = null;
     }
 
-    public function removeClass($class){
-        foreach ($this->obj as $item){
+    public function removeClass($class)
+    {
+	    
+        foreach ($this->obj as $item)
+	{
             $newClasses = trim(str_replace($class, "", $item->getAttribute("class")));
             $item->setAttribute("class", "$newClasses");
         }
+	   
         $this->obj = null;
+    }
+    
+    public function hasClass($class)
+    {
+	    
+        foreach($this->obj as $item)
+	{
+            $classes = $item->getAttribute("class");
+        }
+	    
+        $bool = (preg_match("/".preg_quote($class)."/", $classes)) ? true : false;
+	    
+        return $bool;
+    }
+
+    public function hasAttr($attr, $val)
+    {
+	    
+        foreach($this->obj as $item)
+	{
+            $attrs = $item->getAttribute("$attr");
+        }
+	    
+        $bool = (preg_match("/".preg_quote($val)."/", $attrs)) ? true : false;
+        
+	return $bool;
     }
 
     public function html($html = null){
         
-        if (!isset($html)){
+        if (!isset($html))
+	{
             $html = '';
             
-            foreach($this->obj as $item){
+            foreach($this->obj as $item)
+	    {
                 $children = $item->childNodes;
-                foreach ($children as $child) {
+		    
+                foreach ($children as $child) 
+		{
                     $html .= $child->ownerDocument->saveXML($child);
                 }
+		   
             }
         
             return $html;
-        } else {
+        } 
+	else 
+	{
             
             $dom = new DOMDocument();
             $dom->loadXML($html);
             $xpath = new DOMXPath($dom);
             
-            foreach($this->obj as $item){
-                foreach($xpath->query("/*") as $contentNode){
+            foreach($this->obj as $item)
+	    {
+		    
+                foreach($xpath->query("/*") as $contentNode)
+		{
                     $newitem = $this->dom->createElement($item->nodeName);
                     $item->parentNode->replaceChild($newitem, $item);
                     $contentNode = $this->dom->importNode($contentNode, true);
                     $newitem->appendChild($contentNode);
                 }
+		    
             }
+		
         }
         
         $this->obj = null;
     }
 
-    public function appendHtml($html){
+    public function appendHtml($html)
+    {
         
         $dom = new DOMDocument();
         $dom->loadXML($html);
         $xpath = new DOMXPath($dom);
             
-        foreach($this->obj as $item){
-            foreach($xpath->query("//*") as $contentNode){
+        foreach($this->obj as $item)
+	{
+            foreach($xpath->query("//*") as $contentNode)
+	    {
                 $contentNode = $this->dom->importNode($contentNode, true);
                 $item->appendChild($contentNode);
             }
+		
         }
         
         $this->obj = null;
     }
     
-    public function prependHtml($html){
+    public function prependHtml($html)
+    {
         
         $dom = new DOMDocument();
         $dom->loadXML($html);
         $xpath = new DOMXPath($dom);
             
-        foreach($this->obj as $item){
-            foreach($xpath->query("//*") as $contentNode){
+        foreach($this->obj as $item)
+	{
+		
+            foreach($xpath->query("//*") as $contentNode)
+	    {
                 $contentNode = $this->dom->importNode($contentNode, true);
                 $item->insertBefore($contentNode, $item->firstChild);
             }
+		
         }
         
         $this->obj = null;
     }
     
-    public function remove($keepinner = false){
+    public function remove($keepinner = false)
+    {
         
-        if ($this->query != "::attributes") {
-            foreach($this->obj as $item){
-                if (!$keepinner){
+        if ($this->query != "::attributes") 
+	{
+		
+            foreach($this->obj as $item)
+	    {
+		    
+                if (!$keepinner)
+		{
                     $item->parentNode->removeChild($item);
-                } else {
-                    while ($item->firstChild instanceof DOMNode) {
+                } 
+		else 
+		{
+			
+                    while ($item->firstChild instanceof DOMNode) 
+		    {
                         $item->parentNode->insertBefore($item->firstChild, $item);
                     }
+		
                     $item->parentNode->removeChild($item);
+			
                 }
+		    
             }
-        } else {
-            foreach($this->obj as $attr){
+		
+        } 
+	else 
+	{
+		
+            foreach($this->obj as $attr)
+	    {
                 $attr->parentNode->removeAttribute($attr->nodeName);
             }
+		
         }
         
         $this->obj = null;
     }
     
-    public function unwrap(){
-        foreach($this->obj as $item){
-            while ($item->firstChild instanceof DOMNode) {
+    public function unwrap()
+    {
+	    
+        foreach($this->obj as $item)
+	{
+		
+            while ($item->firstChild instanceof DOMNode) 
+	    {
                 $item->parentNode->insertBefore($item->firstChild, $item);
             }
+		
             $item->parentNode->removeChild($item);
         }
+	    
         $this->obj = null;
     }
     
-    private function breakUp($tag, &$html, &$keys, &$vals, &$attrs){
+    private function HTMLtoArray($tag, &$html, &$keys, &$vals, &$attrs)
+    {
         
 	$html = preg_replace_callback(
             '/([^=<>\s]*)=[\'|"]([^=]*)[\'|"]/', 
@@ -264,6 +363,7 @@ class WebScraper {
             },
             $html
         );
+	    
         $html = preg_replace(
             ["/$tag/", "/[^=]>/", "/</", "/\//"], 
             "", 
@@ -272,134 +372,203 @@ class WebScraper {
         
         $lines = explode("]", $html);
         
-        foreach($lines as $index => $value){
+        foreach($lines as $index => $value)
+	{
             if ($value == "") unset($lines[$index]);
         }
-        foreach($lines as $index => $value){
-        	$arr = explode('=>', str_replace("]", "", $value));
+	    
+        foreach($lines as $index => $value)
+	{
+            $arr = explode('=>', str_replace("]", "", $value));
             array_push($keys, $arr[0]);
             array_push($vals, $arr[1]);
         }
+	    
         $attrs = array_combine($keys, $vals);
     }
     
-    public function wrap($html){
+    public function wrap($html)
+    {
+	    
         $attrs = array();
         $keys = array();
         $vals = array();
             
-        if (preg_match("/<([\w\d]+).*>[^<>]*<\/\\1>/", $html)){
+        if (preg_match("/<([\w\d]+).*>[^<>]*<\/\\1>/", $html))
+	{
             $tag = preg_replace("/<([\w\d]+).*>[^<>]*<\/\\1>/", "$1", $html);
-            $this->breakUp($tag, $html, $keys, $vals, $attrs);
+            $this->HTMLtoArray($tag, $html, $keys, $vals, $attrs);
         }
         
-        foreach($this->obj as $item){
+        foreach($this->obj as $item)
+	{
+		
             $wrapper = $this->dom->createElement("$tag");
-            foreach($attrs as $attr=>$value){
+		
+            foreach($attrs as $attr=>$value)
+	    {
                 $wrapper->setAttribute(trim($attr), trim($value));
             }
+		
             $itemclone = $item->cloneNode(true);
             $wrapper->appendChild($itemclone);
             $this->dom->appendChild($wrapper);
             $item->parentNode->replaceChild($wrapper, $item);
+		
         }
+	    
         $this->obj = null;
     }
     
-    public function removeEmptyTags(){
+    public function removeEmptyTags()
+    {
         $query = '//*[not(*) and not(@*) and not(text()[normalize-space()])]';
-        foreach($this->xpath->query("$query") as $tag){
+	    
+        foreach($this->xpath->query("$query") as $tag)
+	{
             $tag->parentNode->removeChild($tag);
         }
+	    
         $this->obj = null;
     }
     
-    public function empty(){
+    public function empty()
+    {
+	    
         $dom = new DOMDocument();
         $dom->loadXML($html = "<empty/>");
         $xpath = new DOMXPath($dom);
             
-        foreach($this->obj as $item){
-            foreach($xpath->query("/*") as $contentNode){
+        foreach($this->obj as $item)
+	{
+		
+            foreach($xpath->query("/*") as $contentNode)
+	    {
                 $newitem = $this->dom->createElement($item->nodeName);
                 $item->parentNode->replaceChild($newitem, $item);
                 $contentNode = $this->dom->importNode($contentNode, true);
                 $newitem->appendChild($contentNode);
             }
+		
         }
+	    
         $this->obj = null;
     }
     
-    public function text($text = null){
-        foreach($this->obj as $item){
-            if (!isset($text)){ 
+    public function text($text = null)
+    {
+	    
+        foreach($this->obj as $item)
+	{
+		
+            if (!isset($text))
+	    { 
                 return $item->textContent;
-            } else {
+            } 
+	    else 
+	    {
                 $item->textContent = $text;
             }
+		
         }
+	    
         $this->obj = null;
     }
     
-    public function replaceWith($html){
+    public function replaceWith($html)
+    {
         
         $dom = new DOMDocument();
         $dom->loadXML($html);
         $xpath = new DOMXPath($dom);
         
-        foreach($this->obj as $item){
-            foreach($xpath->query("/*") as $replace){
+        foreach($this->obj as $item)
+	{
+		
+            foreach($xpath->query("/*") as $replace)
+	    {
                 $replace = $this->dom->importNode($replace, true);
                 $item->parentNode->replaceChild($replace, $item);
             }
+		
         }
+	    
         $this->obj = null;
     }
     
-    public function count(){
+    public function count()
+    {
+	    
         $count = 0;
-        foreach($this->obj as $item){
+	    
+        foreach($this->obj as $item)
+	{
             $count++;
         }
-        return $count;
+	    
         $this->obj = null;
+	    
+        return $count;
     }
     
-    public function echo($format = true){
+    public function output($format = true)
+    {
+	    
         $this->dom->formatOutput = $format;
-        printf (($this->ishtml) ? (
+	    
+        printf (($this->ishtml) ? 
+	(
             $this->dom->saveHTML()
-        ) : (
+        ) 
+	: 
+	(
             $this->dom->saveXML()
-        ));
+        );
+		
     }
     
-    public function replaceText($pattern, $replace, $html = true){
-        foreach($this->obj as $item){
-            $newtext = preg_replace(
+    public function replaceText($pattern, $replace, $html = true)
+    {
+	    
+        foreach($this->obj as $item)
+	{
+		
+            $newtext = preg_replace
+    	    (
                 $pattern,
                 $replace,
                 $item->textContent
             );
+		
             $item->textContent = $newtext;
+		
         }
         
-        if ($html) {
-            if ($this->ishtml) { 
+        if ($html) 
+	{
+            if ($this->ishtml) 
+	    { 
                 $this->dom->loadHTML(
                     html_entity_decode($this->dom->saveHTML())
                 );
-            } else {
+            } 
+	    else 
+	    {
                 $this->dom->loadXML(
                     html_entity_decode($this->dom->saveXML())
                 );
             }
+	    
             $this->xpath = new DOMXPath($this->dom);
         }
     }
     
-    public function replaceTextCallback($pattern, $func, $html = true){
-        foreach($this->obj as $item){
+    public function replaceTextCallback($pattern, $func, $html = true)
+    {
+	    
+        foreach($this->obj as $item)
+	{
+		
             $newtext = preg_replace_callback(
                 $pattern,
                 function($m) use ($func){
@@ -407,44 +576,32 @@ class WebScraper {
                 },
                 $item->textContent
             );
+		
             $item->textContent = $newtext;
+		
         }
         
-        if ($html) {
-            if ($this->ishtml) { 
+        if ($html) 
+	{
+		
+            if ($this->ishtml) 
+	    { 
+		    
                 $this->dom->loadHTML(
                     html_entity_decode($this->dom->saveHTML())
                 );
-            } else {
-                $this->dom->loadXML(
+		    
+            } 
+	    else 
+	    {
+                
+		$this->dom->loadXML(
                     html_entity_decode($this->dom->saveXML())
                 );
+		   
             }
+		
             $this->xpath = new DOMXPath($this->dom);
-        }
-    }
-    
-    public function hasClass($class){
-        foreach($this->obj as $item){
-            $classes = $item->getAttribute("class");
-        }
-        $bool = (preg_match("/".preg_quote($class)."/", $classes)) ? true : false;
-        return $bool;
-    }
-
-    public function hasAttr($attr, $val){
-        foreach($this->obj as $item){
-            $attrs = $item->getAttribute("$attr");
-        }
-        $bool = (preg_match("/".preg_quote($val)."/", $attrs)) ? true : false;
-        return $bool;
-    }
-    
-    public function iterate($func){
-        $i = 1;
-        foreach($this->obj as $item){
-            $func($this->_($this->query."[$i]"));
-            $i++;
         }
     }
 }
