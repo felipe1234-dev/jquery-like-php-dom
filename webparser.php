@@ -1,156 +1,56 @@
 <?php
-class WebParser
+
+// START
+trait AttributeEditingMethods 
 {
-
-    private $obj;
-    private $ishtml = null;
-    private $query;
-    private $dom;
-    private $xpath;
-
-    public function __construct()
-    {
-        $this->dom = new DOMDocument();
-    }
-
-    public function loadHTMLFile($url)
-    {
-        libxml_use_internal_errors(true);
-        $this->dom->loadHTMLFile($url, LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD);
-        libxml_use_internal_errors(false);
-        $this->xpath = new DOMXPath($this->dom);
-        $this->ishtml = true;
-    }
-
-    public function loadXML($XML)
-    {
-        $this->dom->loadXML($XML);
-        $this->xpath = new DOMXPath($this->dom);
-        $this->ishtml = false;
-    }
-
-    public function loadHTML($HTML)
-    {
-        $this->dom->loadHTML($HTML);
-        $this->xpath = new DOMXPath($this->dom);
-        $this->ishtml = true;
-    }
-
-    private function convertToXPath($query)
-    {
-        $xpath = $query;
-
-        $xpath = preg_replace(
-            [
-                "/\n{1,}/",
-                "/\s{2,}/",
-                "/([^,])\s/",
-                "/\/>\//",
-
-                "/\[([^\.\s\/\#\[\,]+)='(([^\s\.]+)\.([^\s\.]+))+'\]/",
-
-                "/:first-child/",
-                "/:last-child/",
-
-                "/\.([^\.\s\/\#\[,]+)/",
-                "/\/{1,2}\[/",
-                "/^\[/",
-
-                "/\#([^\.\s\/\#\[,]+)/",
-                "/\/{1,2}\[/",
-                "/^\[/",
-
-                "/\[([^\.\s\/\#\[\,]+)='([^\s]+)'\]/",
-                "/\/{1,2}\[/",
-                "/^\[/",
-
-                "/{dot}/",
-                "/::text/",
-                "/::comment/",
-                "/::attributes/",
-
-                "/([^\.\s\/\#\[,]+),\s([^\.\s\/\#\[,]+)/",
-                "/,\s([^\.\s\/\#\[,]+)/",
-                "/((self::[^\.\s\/\#\[,]+ or\s)+(self::[^\.\s\/\#\[,]+)+)/",
-                "/self::self::/",
-                "/\/{1,2}\[/",
-                "/^\[/",
-            ],
-            [
-                "",
-                " ",
-                "$1/",
-                "/",
-
-                "[$1='$3{dot}$4']",
-
-                "[1]",
-                "[last()]",
-
-                "[contains(@class, '$1')]",
-                "/*[",
-                "*[",
-
-                "[contains(@id, '$1')]",
-                "/*[",
-                "*[",
-
-                "[contains(@$1, '$2')]",
-                "/*[",
-                "*[",
-
-                ".",
-                "text()",
-                "comment()",
-                "@*",
-
-                "self::$1 or self::$2",
-                " or self::$1",
-                "[$1]",
-                "self::",
-                "/*[",
-                "*[",
-            ],
-            $xpath
-        );
-
-        return $xpath;
-    }
-
-    public function query($query)
-    {
-
-        $this->query = $query;
-        $query = $this->convertToXPath($query);
-
-        $this->obj = $this->xpath->query("//$query");
-
-        return $this;
-    }
-
-    public function setAttribute($attr, $value)
+    
+    public function addAttr($attr, $value)
     {
 
         foreach ($this->obj as $item) 
         {
             $item->setAttribute("$attr", "$value");
         }
-
-        $this->obj = null;
     }
 
-    public function removeAttribute($attr)
+    public function removeAttr($attr)
     {
         foreach ($this->obj as $item) 
         {
             $item->removeAttribute("$attr");
         }
-
-        $this->obj = null;
     }
 
+    public function removeAllAttrsExcept($attrs)
+    {
+        $attrs = explode(", ", $attrs);
 
-    public function hasAttribute($attr, $val)
+        foreach($this->obj as $attr)
+        {
+
+            foreach ($attrs as $exception) 
+            {
+                if ($attr->nodeName != $exception) 
+                {
+                    $attr->parentNode->removeAttribute($attr->nodeName);
+                } 
+            }
+
+        }
+    }
+
+    public function getAttr($attr)
+    {
+
+        foreach ($this->obj as $item) 
+        {
+            $attr = $item->getAttribute("$attr");
+        }
+
+        return $attr;
+    }
+
+    public function hasAttr($attr, $val)
     {
 
         foreach ($this->obj as $item) 
@@ -163,24 +63,6 @@ class WebParser
         return $bool;
     }
 
-    public function href($url)
-    {
-
-        foreach ($this->obj as $item) 
-        {
-            $item->setAttribute("href", "$url");
-        }
-    }
-
-    public function src($url)
-    {
-
-        foreach ($this->obj as $item) 
-        {
-            $item->setAttribute("src", "$url");
-        }
-    }
-
     public function addClass($class)
     {
 
@@ -191,7 +73,6 @@ class WebParser
             $item->setAttribute("class", "$newClasses");
         }
 
-        $this->obj = null;
     }
 
     public function removeClass($class)
@@ -203,7 +84,17 @@ class WebParser
             $item->setAttribute("class", "$newClasses");
         }
 
-        $this->obj = null;
+    }
+
+    public function getClass()
+    {
+
+        foreach ($this->obj as $item) 
+        {
+            $class = $item->getAttribute("class");
+        }
+
+        return $class;
     }
 
     public function hasClass($class)
@@ -218,49 +109,167 @@ class WebParser
 
         return $bool;
     }
-
-    public function html($html = null)
+    
+    public function href($url)
     {
 
-        if (!isset($html)) 
+        foreach ($this->obj as $item) 
         {
-            $html = '';
-
-            foreach ($this->obj as $item) 
-            {
-
-                $children = $item->childNodes;
-
-                foreach ($children as $child) 
-                {
-                    $html .= $child->ownerDocument->saveXML($child);
-                }
-
-            }
-
-            return $html;
-        } else 
-        {
-
-            $dom = new DOMDocument();
-            $dom->loadXML($html);
-            $xpath = new DOMXPath($dom);
-
-            foreach ($this->obj as $item) 
-            {
-
-                foreach ($xpath->query("/*") as $contentNode) 
-                {
-                    $newitem = $this->dom->createElement($item->nodeName);
-                    $item->parentNode->replaceChild($newitem, $item);
-                    $contentNode = $this->dom->importNode($contentNode, true);
-                    $newitem->appendChild($contentNode);
-                }
-
-            }
+            $item->setAttribute("href", "$url");
         }
 
-        $this->obj = null;
+    }
+
+    public function src($url)
+    {
+
+        foreach ($this->obj as $item) 
+        {
+            $item->setAttribute("src", "$url");
+        }
+    }
+
+} 
+// END
+
+// START
+trait TextEditingMethods
+{
+    public function getText()
+    {
+        foreach ($this->obj as $item) 
+        {
+            return $item->textContent;
+        }
+    }
+
+    public function editText($text)
+    {
+        foreach ($this->obj as $item) 
+        {
+            $item->textContent = $text;
+        }
+    }
+
+    public function replaceText($pattern, $replace, $html = true)
+    {
+
+        foreach ($this->obj as $item) 
+        {
+
+            $newText = preg_replace(
+                $pattern,
+                $replace,
+                $item->textContent
+            );
+
+            $item->textContent = $newText;
+        }
+
+        if ($html) 
+        {
+            if ($this->isHtml) 
+            {
+                $this->dom->loadHTML(
+                    html_entity_decode($this->dom->saveHTML())
+                );
+            } 
+            else {
+                $this->dom->loadXML(
+                    html_entity_decode($this->dom->saveXML())
+                );
+            }
+
+            $this->xPath = new DOMXPath($this->dom);
+        }
+    }
+
+    public function replaceTextCallback($pattern, $func, $html = true)
+    {
+
+        foreach ($this->obj as $item) 
+        {
+
+            $newText = preg_replace_callback(
+                $pattern,
+                function ($m) use ($func) 
+                {
+                    return $func($m);
+                },
+                $item->textContent
+            );
+
+            $item->textContent = $newText;
+        }
+
+        if ($html) 
+        {
+
+            if ($this->isHtml) 
+            {
+
+                $this->dom->loadHTML(
+                    html_entity_decode($this->dom->saveHTML())
+                );
+
+            } 
+            else {
+
+                $this->dom->loadXML(
+                    html_entity_decode($this->dom->saveXML())
+                );
+
+            }
+
+            $this->xPath = new DOMXPath($this->dom);
+        }
+    }
+
+}
+//END 
+
+// START
+trait HTMLEditingMethods
+{
+    public function getHtml()
+    {
+        $html = '';
+
+        foreach ($this->obj as $item) 
+        {
+
+            $children = $item->childNodes;
+
+            foreach ($children as $child) 
+            {
+                $html .= $child->ownerDocument->saveXML($child);
+            }
+
+        }
+
+        return $html;
+    }
+
+    public function editHtml($html = null)
+    {
+
+        $dom = new DOMDocument();
+        $dom->loadXML($html);
+        $xpath = new DOMXPath($dom);
+
+        foreach ($this->obj as $item) 
+        {
+
+            foreach ($xpath->query("/*") as $contentNode) 
+            {
+                $newItem = $this->dom->createElement($item->nodeName);
+                $item->parentNode->replaceChild($newItem, $item);
+                $contentNode = $this->dom->importNode($contentNode, true);
+                $newItem->appendChild($contentNode);
+            }
+                
+        }
+
     }
 
     public function appendHtml($html)
@@ -272,14 +281,15 @@ class WebParser
 
         foreach ($this->obj as $item) 
         {
+
             foreach ($xpath->query("//*") as $contentNode) 
             {
                 $contentNode = $this->dom->importNode($contentNode, true);
                 $item->appendChild($contentNode);
             }
+
         }
 
-        $this->obj = null;
     }
 
     public function prependHtml($html)
@@ -297,45 +307,23 @@ class WebParser
                 $contentNode = $this->dom->importNode($contentNode, true);
                 $item->insertBefore($contentNode, $item->firstChild);
             }
-            
-        }
 
-        $this->obj = null;
+        }
     }
 
-    public function remove($keepinner = false)
+    public function removeTag()
     {
 
-        if ($this->query != "::attributes") 
+        foreach ($this->obj as $item) 
         {
-
-            foreach ($this->obj as $item) 
+            while ($item->firstChild instanceof DOMNode) 
             {
-
-                if (!$keepinner) 
-                {
-                    $item->parentNode->removeChild($item);
-                } else 
-                {
-
-                    while ($item->firstChild instanceof DOMNode) 
-                    {
-                        $item->parentNode->insertBefore($item->firstChild, $item);
-                    }
-
-                    $item->parentNode->removeChild($item);
-                }
+                $item->parentNode->insertBefore($item->firstChild, $item);
             }
-        } else 
-        {
 
-            foreach ($this->obj as $attr) 
-            {
-                $attr->parentNode->removeAttribute($attr->nodeName);
-            }
+            $item->parentNode->removeChild($item);
         }
-
-        $this->obj = null;
+    
     }
 
     public function unwrap()
@@ -352,7 +340,6 @@ class WebParser
             $item->parentNode->removeChild($item);
         }
 
-        $this->obj = null;
     }
 
     private function HTMLtoArray($tag, &$html, &$keys, &$vals, &$attrs)
@@ -418,28 +405,26 @@ class WebParser
             $wrapper->appendChild($itemclone);
             $this->dom->appendChild($wrapper);
             $item->parentNode->replaceChild($wrapper, $item);
+
         }
 
-        $this->obj = null;
     }
 
     public function removeEmptyTags()
     {
-        $query = '//*[not(*) and not(@*) and not(text()[normalize-space()])]';
+        $xpath = '//*[not(*) and not(@*) and not(text()[normalize-space()])]';
 
-        foreach ($this->xpath->query("$query") as $tag) 
+        foreach ($this->xpath->query("$xpath") as $tag) 
         {
             $tag->parentNode->removeChild($tag);
         }
 
-        $this->obj = null;
     }
 
-    public function empty()
+    public function clearTag()
     {
-
         $dom = new DOMDocument();
-        $dom->loadXML($html = "<empty/>");
+        $dom->loadXML("<empty/>");
         $xpath = new DOMXPath($dom);
 
         foreach ($this->obj as $item) 
@@ -447,37 +432,18 @@ class WebParser
 
             foreach ($xpath->query("/*") as $contentNode) 
             {
-                $newitem = $this->dom->createElement($item->nodeName);
-                $item->parentNode->replaceChild($newitem, $item);
+                $newItem = $this->dom->createElement($item->nodeName);
+                $item->parentNode->replaceChild($newItem, $item);
                 $contentNode = $this->dom->importNode($contentNode, true);
-                $newitem->appendChild($contentNode);
+                $newItem->appendChild($contentNode);
             }
+
         }
-
-        $this->obj = null;
-    }
-
-    public function text($text = null)
-    {
-
-        foreach ($this->obj as $item) 
-        {
-
-            if (!isset($text)) 
-            {
-                return $item->textContent;
-            } else 
-            {
-                $item->textContent = $text;
-            }
-        }
-
-        $this->obj = null;
+        
     }
 
     public function replaceWith($html)
     {
-
         $dom = new DOMDocument();
         $dom->loadXML($html);
         $xpath = new DOMXPath($dom);
@@ -490,24 +456,119 @@ class WebParser
                 $replace = $this->dom->importNode($replace, true);
                 $item->parentNode->replaceChild($replace, $item);
             }
-        }
 
-        $this->obj = null;
+        }
+        
+    }
+    
+}
+// END
+
+class WebParser
+{
+    use AttributeEditingMethods;
+    use TextEditingMethods;
+    use HTMLEditingMethods;
+
+    private $obj;
+    private $isHtml = null;
+    private $CSSQuery;
+    private $dom;
+    private $xpath;
+
+    public function __construct()
+    {
+        $this->dom = new DOMDocument();
+    }
+
+    public function loadHTMLFile($url)
+    {
+        libxml_use_internal_errors(true);
+        $this->dom->loadHTMLFile($url, LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD);
+        libxml_use_internal_errors(false);
+        $this->xPath = new DOMXPath($this->dom);
+        $this->isHtml = true;
+    }
+
+    public function loadXML($XML)
+    {
+        $this->dom->loadXML($XML);
+        $this->xPath = new DOMXPath($this->dom);
+        $this->isHtml = false;
+    }
+
+    public function loadHTML($HTML)
+    {
+        $this->dom->loadHTML($HTML);
+        $this->xPath = new DOMXPath($this->dom);
+        $this->isHtml = true;
+    }
+
+    private function convertToXPath($CSSQuery)
+    {
+        $xpath = $CSSQuery;
+
+        $xpath = preg_replace_callback(
+            "/\[([\d\w-]+=['\"][^\s]+['\"])\]/",
+            function ($m) 
+            {
+                return "[" . str_replace(".", "{dot}", $m[1]) . "]";
+            },
+            $xpath
+        );
+
+        $replaces = [
+            "/\n{1,}/"                              => "",
+            "/\s{2,}/"                              => " ",
+            "/(\w)[\s](\w)/"                        => "$1/$2",
+            "/(\w) > (\w)/"                         => "$1/$2",
+            "/,\s/"                                 => " | //",
+            "/\[([\d\w-]+)=['\"]([^\s]+)['\"]\]/"   => "[contains(@$1, '$2')]",
+            "/\.([\d\w-]+)/"                        => "[contains(@class, '$1')]",
+            "/\#([\d\w-]+)/"                        => "[contains(@id, '$1')]",
+            "/\]\[/"                                => "]/*[",
+            "/\][\s]*([\w])/"                       => "]/$1",
+            "/{dot}/"                               => ".",
+            "/:first-child/"                        => "[1]",
+            "/:last-child/"                         => "[last()]",
+            "/[^\w\]]::text/"                       => "text()",
+            "/([\w\]])::text/"                      => "$1/text()",
+            "/[^\w\]]::comments/"                   => "comment()",
+            "/([\w\]])::comments/"                  => "$1/comment()",
+            "/[^\w\]]::attributes/"                 => "@*",
+            "/([\w\]])::attributes/"                => "$1/@*",
+            "/([\w\]])::(\w+)/"                     => "$1/@$2"
+        ];
+        $xpath = preg_replace(
+            array_keys($replaces),
+            array_values($replaces),
+            $xpath
+        );
+
+        return $xpath;
+    }
+
+    public function query($CSSQuery)
+    {
+
+        $this->cssQuery = $CSSQuery;
+        $xpath = $this->convertToXPath($CSSQuery);
+
+        $this->obj = $this->xpath->query("//$xpath");
+
+        return $this;
+    }
+
+    // short version for query()
+    public function Q($CSSQuery)
+    {
+        $this->query($CSSQuery);
+        return $this;
     }
 
     public function count()
     {
-
-        $count = 0;
-
-        foreach ($this->obj as $item) 
-        {
-            $count++;
-        }
-
-        $this->obj = null;
-
-        return $count;
+        return count($this->obj);
     }
 
     public function output($format = true)
@@ -515,81 +576,8 @@ class WebParser
 
         $this->dom->formatOutput = $format;
 
-        printf(($this->ishtml) ?
+        printf(($this->isHtml) ?
             ($this->dom->saveHTML())
             : ($this->dom->saveXML()));
-    }
-
-    public function replaceText($pattern, $replace, $html = true)
-    {
-
-        foreach ($this->obj as $item) 
-        {
-
-            $newtext = preg_replace(
-                $pattern,
-                $replace,
-                $item->textContent
-            );
-
-            $item->textContent = $newtext;
-        }
-
-        if ($html) 
-        {
-            if ($this->ishtml) 
-            {
-                $this->dom->loadHTML(
-                    html_entity_decode($this->dom->saveHTML())
-                );
-            } else 
-            {
-                $this->dom->loadXML(
-                    html_entity_decode($this->dom->saveXML())
-                );
-            }
-
-            $this->xpath = new DOMXPath($this->dom);
-        }
-    }
-
-    public function replaceTextCallback($pattern, $func, $html = true)
-    {
-
-        foreach ($this->obj as $item) 
-        {
-
-            $newtext = preg_replace_callback(
-                $pattern,
-                function ($m) use ($func) 
-                {
-                    return $func($m);
-                },
-                $item->textContent
-            );
-
-            $item->textContent = $newtext;
-        }
-
-        if ($html) 
-        {
-
-            if ($this->ishtml) 
-            {
-
-                $this->dom->loadHTML(
-                    html_entity_decode($this->dom->saveHTML())
-                );
-
-            } else 
-            {
-
-                $this->dom->loadXML(
-                    html_entity_decode($this->dom->saveXML())
-                );
-            }
-
-            $this->xpath = new DOMXPath($this->dom);
-        }
     }
 }
