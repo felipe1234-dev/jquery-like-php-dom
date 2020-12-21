@@ -29,8 +29,8 @@ A few illustrating examples to give you a feel on how it works:
 <details><summary><b>Getting page plaintext</b></summary>
 
 ```php
-include "path/webscraper.php";
-$doc = new WebScraper();
+include "path/webparser.php";
+$doc = new WebParser();
 $doc->loadHTMLFile($url);
 
 echo $doc->query("*")->getText();
@@ -41,8 +41,8 @@ echo $doc->query("*")->getText();
 <details><summary><b>Deleting multiple tags</b></summary>
 
 ```php
-include "path/webscraper.php";
-$doc = new WebScraper();
+include "path/webparser.php";
+$doc = new WebParser();
 $doc->loadHTMLFile($url);
 
 $doc->query("head, script, noscript, style")->remove();
@@ -55,8 +55,8 @@ $doc->output();
 <details><summary><b>Finding first &lt;a&gt; tag and changing its href</b></summary>
 
 ```php
-include "path/webscraper.php";
-$doc = new WebScraper();
+include "path/webparser.php";
+$doc = new WebParser();
 $doc->loadHTMLFile($url);
 
 $doc->query("a[1]")->href("folder/index.html");
