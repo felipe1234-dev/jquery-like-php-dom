@@ -4,6 +4,6 @@ include_once "../src/webparser.php";
 $doc = new WebParser();
 $doc->loadHTMLFile('https://en.wikipedia.org/wiki/COVID-19_pandemic');
 
-$doc->query("img")->src("sick-sponge-bob.jpg");
+$doc->query("img")->src("../sick-sponge-bob.jpg");
 
 $doc->output();
