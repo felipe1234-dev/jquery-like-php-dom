@@ -14,7 +14,7 @@ $doc->loadHTML('
     </div>
 ');
 
-// queries all divs and unwraps them
+// queries all uls inside divs and unwraps them
 $doc->query("div ul")->unwrap();
 $doc->query("ul")->wrap('<section class="bookshelf"></section>');
 
