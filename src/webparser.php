@@ -1,9 +1,9 @@
 <?php
 
-// START
-trait AttributeEditingMethods 
+
+trait AttributeEditingMethods
 {
-    
+
     public function addAttr($attr, $value)
     {
 
@@ -11,6 +11,8 @@ trait AttributeEditingMethods
         {
             $item->setAttribute("$attr", "$value");
         }
+
+        return $this;
     }
 
     public function removeAttr($attr)
@@ -19,13 +21,15 @@ trait AttributeEditingMethods
         {
             $item->removeAttribute("$attr");
         }
+
+        return $this;
     }
 
     public function removeAllAttrsExcept($attrs)
     {
         $attrs = explode(", ", $attrs);
 
-        foreach($this->obj as $attr)
+        foreach ($this->obj as $attr) 
         {
 
             foreach ($attrs as $exception) 
@@ -33,10 +37,12 @@ trait AttributeEditingMethods
                 if ($attr->nodeName != $exception) 
                 {
                     $attr->parentNode->removeAttribute($attr->nodeName);
-                } 
+                }
             }
 
         }
+
+        return $this;
     }
 
     public function getAttr($attr)
@@ -73,6 +79,7 @@ trait AttributeEditingMethods
             $item->setAttribute("class", "$newClasses");
         }
 
+        return $this;
     }
 
     public function removeClass($class)
@@ -84,6 +91,7 @@ trait AttributeEditingMethods
             $item->setAttribute("class", "$newClasses");
         }
 
+        return $this;
     }
 
     public function getClass()
@@ -109,30 +117,57 @@ trait AttributeEditingMethods
 
         return $bool;
     }
-    
-    public function href($url)
+
+    public function href($url = null)
     {
 
         foreach ($this->obj as $item) 
         {
-            $item->setAttribute("href", "$url");
+            if (isset($url)) 
+            {
+                $item->setAttribute("href", "$url");
+            }
+            else {
+                return $item->getAttribute("href");
+            }
         }
 
+        return $this;
     }
 
-    public function src($url)
+    public function src($url = null)
     {
 
         foreach ($this->obj as $item) 
         {
-            $item->setAttribute("src", "$url");
+            if (isset($url)) 
+            {
+                $item->setAttribute("src", "$url");
+            }
+            else {
+                return $item->getAttribute("src");
+            }
         }
+        
     }
 
-} 
-// END
+    public function class($class = null)
+    {
 
-// START
+        foreach ($this->obj as $item) 
+        {
+            if (isset($url)) 
+            {
+                $item->setAttribute("class", "$class");
+            }
+            else {
+                return $item->getAttribute("class");
+            }
+        }
+        
+    }
+}
+
 trait TextEditingMethods
 {
     public function getText()
@@ -141,6 +176,8 @@ trait TextEditingMethods
         {
             return $item->textContent;
         }
+
+        return $this;
     }
 
     public function editText($text)
@@ -149,6 +186,8 @@ trait TextEditingMethods
         {
             $item->textContent = $text;
         }
+
+        return $this;
     }
 
     public function replaceText($pattern, $replace, $html = true)
@@ -168,11 +207,14 @@ trait TextEditingMethods
 
         if ($html) 
         {
+
             if ($this->isHtml) 
             {
+                libxml_use_internal_errors(true);
                 $this->dom->loadHTML(
                     html_entity_decode($this->dom->saveHTML())
                 );
+                libxml_use_internal_errors(false);
             } 
             else {
                 $this->dom->loadXML(
@@ -180,8 +222,10 @@ trait TextEditingMethods
                 );
             }
 
-            $this->xPath = new DOMXPath($this->dom);
+            $this->xpath = new DOMXPath($this->dom);
         }
+
+        return $this;
     }
 
     public function replaceTextCallback($pattern, $func, $html = true)
@@ -208,27 +252,25 @@ trait TextEditingMethods
             if ($this->isHtml) 
             {
 
+                libxml_use_internal_errors(true);
                 $this->dom->loadHTML(
                     html_entity_decode($this->dom->saveHTML())
                 );
-
-            } 
-            else {
+                libxml_use_internal_errors(false);
+            } else {
 
                 $this->dom->loadXML(
                     html_entity_decode($this->dom->saveXML())
                 );
-
             }
 
-            $this->xPath = new DOMXPath($this->dom);
+            $this->xpath = new DOMXPath($this->dom);
         }
+
+        return $this;
     }
-
 }
-//END 
 
-// START
 trait HTMLEditingMethods
 {
     public function getHtml()
@@ -244,7 +286,6 @@ trait HTMLEditingMethods
             {
                 $html .= $child->ownerDocument->saveXML($child);
             }
-
         }
 
         return $html;
@@ -267,9 +308,10 @@ trait HTMLEditingMethods
                 $contentNode = $this->dom->importNode($contentNode, true);
                 $newItem->appendChild($contentNode);
             }
-                
+
         }
 
+        return $this;
     }
 
     public function appendHtml($html)
@@ -287,9 +329,9 @@ trait HTMLEditingMethods
                 $contentNode = $this->dom->importNode($contentNode, true);
                 $item->appendChild($contentNode);
             }
-
         }
 
+        return $this;
     }
 
     public function prependHtml($html)
@@ -309,6 +351,8 @@ trait HTMLEditingMethods
             }
 
         }
+
+        return $this;
     }
 
     public function removeTag()
@@ -316,14 +360,10 @@ trait HTMLEditingMethods
 
         foreach ($this->obj as $item) 
         {
-            while ($item->firstChild instanceof DOMNode) 
-            {
-                $item->parentNode->insertBefore($item->firstChild, $item);
-            }
-
             $item->parentNode->removeChild($item);
         }
-    
+
+        return $this;
     }
 
     public function unwrap()
@@ -331,15 +371,17 @@ trait HTMLEditingMethods
 
         foreach ($this->obj as $item) 
         {
+            $newParent = $item->parentNode->parentNode;
 
-            while ($item->firstChild instanceof DOMNode) 
+            foreach($item->parentNode->childNodes as $child)
             {
-                $item->parentNode->insertBefore($item->firstChild, $item);
+                $newParent->insertBefore($child->cloneNode(true), $item->parentNode);
             }
 
-            $item->parentNode->removeChild($item);
+            $newParent->removeChild($item->parentNode);
         }
 
+        return $this;
     }
 
     private function HTMLtoArray($tag, &$html, &$keys, &$vals, &$attrs)
@@ -349,8 +391,7 @@ trait HTMLEditingMethods
             '/([^=<>\s]*)=[\'|"]([^=]*)[\'|"]/',
             function ($m) 
             {
-                return "{$m[1]} => 
-                {$m[2]}]";
+                return "{$m[1]} => {$m[2]}]";
             },
             $html
         );
@@ -405,9 +446,9 @@ trait HTMLEditingMethods
             $wrapper->appendChild($itemclone);
             $this->dom->appendChild($wrapper);
             $item->parentNode->replaceChild($wrapper, $item);
-
         }
 
+        return $this;
     }
 
     public function removeEmptyTags()
@@ -419,10 +460,12 @@ trait HTMLEditingMethods
             $tag->parentNode->removeChild($tag);
         }
 
+        return $this;
     }
 
     public function clearTag()
     {
+
         $dom = new DOMDocument();
         $dom->loadXML("<empty/>");
         $xpath = new DOMXPath($dom);
@@ -437,13 +480,14 @@ trait HTMLEditingMethods
                 $contentNode = $this->dom->importNode($contentNode, true);
                 $newItem->appendChild($contentNode);
             }
-
         }
-        
+
+        return $this;
     }
 
     public function replaceWith($html)
     {
+
         $dom = new DOMDocument();
         $dom->loadXML($html);
         $xpath = new DOMXPath($dom);
@@ -456,13 +500,11 @@ trait HTMLEditingMethods
                 $replace = $this->dom->importNode($replace, true);
                 $item->parentNode->replaceChild($replace, $item);
             }
-
         }
-        
+
+        return $this;
     }
-    
 }
-// END
 
 class WebParser
 {
@@ -486,21 +528,23 @@ class WebParser
         libxml_use_internal_errors(true);
         $this->dom->loadHTMLFile($url, LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD);
         libxml_use_internal_errors(false);
-        $this->xPath = new DOMXPath($this->dom);
+        $this->xpath = new DOMXPath($this->dom);
         $this->isHtml = true;
     }
 
     public function loadXML($XML)
     {
         $this->dom->loadXML($XML);
-        $this->xPath = new DOMXPath($this->dom);
+        $this->xpath = new DOMXPath($this->dom);
         $this->isHtml = false;
     }
 
     public function loadHTML($HTML)
     {
+        libxml_use_internal_errors(true);
         $this->dom->loadHTML($HTML);
-        $this->xPath = new DOMXPath($this->dom);
+        libxml_use_internal_errors(false);
+        $this->xpath = new DOMXPath($this->dom);
         $this->isHtml = true;
     }
 
@@ -548,10 +592,10 @@ class WebParser
         return $xpath;
     }
 
-    public function query($CSSQuery)
+    public function query($CSSQuery, $bool = true)
     {
 
-        $this->cssQuery = $CSSQuery;
+        if ($bool) { $this->CSSQuery = $CSSQuery; }
         $xpath = $this->convertToXPath($CSSQuery);
 
         $this->obj = $this->xpath->query("//$xpath");
@@ -566,6 +610,16 @@ class WebParser
         return $this;
     }
 
+    public function iterate($func)
+    {
+        $i = 1;
+        foreach ($this->obj as $item) 
+        {
+            $func($this->query("{$this->CSSQuery}[$i]", false));
+            $i++;
+        }
+    }
+
     public function count()
     {
         return count($this->obj);
@@ -576,7 +630,7 @@ class WebParser
 
         $this->dom->formatOutput = $format;
 
-        printf(($this->isHtml) ?
+        echo (($this->isHtml) ?
             ($this->dom->saveHTML())
             : ($this->dom->saveXML()));
     }
