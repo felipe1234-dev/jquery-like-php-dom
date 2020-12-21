@@ -1,0 +1,16 @@
+{
+    "name": "user/php-dom-query",
+    "description": "Easy-to-learn php dom parser with CSS selector and  short codes",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "felipe1234-dev",
+            "email": "felipejean2002@gmail.com"
+        }
+    ],
+    "autoload": {
+        "classmap": ["src/"]
+    },
+    "require": {}
+}
