@@ -90,10 +90,56 @@ $doc->query("*")->iterate(function($item){
 
 ## Extra CSS selectors: `*`, `::text`, `::attributes` and `::comments`
 
-``
+These are 3 new selectors that try to emulate the behaviors of the following xpathes: `*`, `text()`, `@*` and `comment()`. 
+If you have been using xpath for a long time, you already understand how they work, but if not, here it is a simple review:
+
+### `*` - Global selector - matches everything
+<details><summary>Match everything anywhere</summary>
+
+```php
+$doc->query("*");
+```
+</details>
+<details><summary>Match everything that is inside a p tag only</summary>
+
+```php
+$doc->query("p *");
+```
+</details>
+
+### `::text` - queries text nodes
+<details><summary>Match text nodes anywhere</summary>
+
+```php
+$doc->query("*::text");
+```
+</details>
+
+<details><summary>Match text inside p tags</summary>
+
+```php
+$doc->query("p::text");
+```
+</details>
+
+### `::attributes` - queries node attributes
+<details><summary>Match text nodes anywhere</summary>
+
+```php
+$doc->query("*::text");
+```
+</details>
+
+<details><summary>Match text inside p tags</summary>
+
+```php
+$doc->query("p::text");
+```
+</details>
+
 
 <!-- TABLE OF CONTENTS -->
-<details open="close">
+<details open="open">
     <summary>List of Methods</summary>
     <ol>
         <li>
