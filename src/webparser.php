@@ -4,15 +4,29 @@
 trait AttributeEditingMethods
 {
 
-    public function addAttr($attr, $value)
+    public function attr($attr = null, $value = null)
     {
-
+    
         foreach ($this->obj as $item) 
         {
-            $item->setAttribute("$attr", "$value");
+            if (!isset($attr) || !isset($value))
+            {
+                
+                $item->setAttribute("$attr", "$value");
+                
+                return $this;
+                
+            } 
+            else {
+                
+                $attr = $item->getAttribute("$attr");
+                
+                return $attr;
+                
+            }
+            
         }
-
-        return $this;
+        
     }
 
     public function removeAttr($attr)
@@ -43,17 +57,6 @@ trait AttributeEditingMethods
         }
 
         return $this;
-    }
-
-    public function getAttr($attr)
-    {
-
-        foreach ($this->obj as $item) 
-        {
-            $attr = $item->getAttribute("$attr");
-        }
-
-        return $attr;
     }
 
     public function hasAttr($attr, $val)
@@ -123,6 +126,7 @@ trait AttributeEditingMethods
 
         foreach ($this->obj as $item) 
         {
+            
             if (isset($url)) 
             {
                 $item->setAttribute("href", "$url");
@@ -130,6 +134,7 @@ trait AttributeEditingMethods
             else {
                 return $item->getAttribute("href");
             }
+            
         }
 
         return $this;
@@ -151,18 +156,20 @@ trait AttributeEditingMethods
         
     }
 
-    public function class($class = null)
+    public function val($value = null)
     {
 
         foreach ($this->obj as $item) 
         {
+            
             if (isset($url)) 
             {
-                $item->setAttribute("class", "$class");
+                $item->setAttribute("value", "$value");
             }
             else {
-                return $item->getAttribute("class");
+                return $item->getAttribute("value");
             }
+            
         }
         
     }
@@ -170,24 +177,26 @@ trait AttributeEditingMethods
 
 trait TextEditingMethods
 {
-    public function getText()
+    public function text($text = null)
     {
+        
         foreach ($this->obj as $item) 
         {
-            return $item->textContent;
+            if (!isset($text))
+            {
+                
+                return $item->textContent;
+                
+            } 
+            else {
+                
+                $item->textContent = $text;
+            
+                return $this;
+                
+            }
         }
-
-        return $this;
-    }
-
-    public function editText($text)
-    {
-        foreach ($this->obj as $item) 
-        {
-            $item->textContent = $text;
-        }
-
-        return $this;
+        
     }
 
     public function replaceText($pattern, $replace, $html = true)
@@ -273,48 +282,50 @@ trait TextEditingMethods
 
 trait HTMLEditingMethods
 {
-    public function getHtml()
+    public function html($html = null)
     {
-        $html = '';
-
-        foreach ($this->obj as $item) 
+        if (!isset($html))
         {
+            $html = '';
 
-            $children = $item->childNodes;
-
-            foreach ($children as $child) 
+            foreach ($this->obj as $item) 
             {
-                $html .= $child->ownerDocument->saveXML($child);
-            }
-        }
 
-        return $html;
-    }
+                $children = $item->childNodes;
 
-    public function editHtml($html = null)
-    {
-
-        $dom = new DOMDocument();
-        $dom->loadXML($html);
-        $xpath = new DOMXPath($dom);
-
-        foreach ($this->obj as $item) 
-        {
-
-            foreach ($xpath->query("/*") as $contentNode) 
-            {
-                $newItem = $this->dom->createElement($item->nodeName);
-                $item->parentNode->replaceChild($newItem, $item);
-                $contentNode = $this->dom->importNode($contentNode, true);
-                $newItem->appendChild($contentNode);
+                foreach ($children as $child) 
+                {
+                    $html .= $child->ownerDocument->saveXML($child);
+                }
+                
             }
 
-        }
+            return $html;
+        } 
+        else {
 
-        return $this;
+            $dom = new DOMDocument();
+            $dom->loadXML($html);
+            $xpath = new DOMXPath($dom);
+
+            foreach ($this->obj as $item) 
+            {
+
+                foreach ($xpath->query("/*") as $contentNode) 
+                {
+                    $newItem = $this->dom->createElement($item->nodeName);
+                    $item->parentNode->replaceChild($newItem, $item);
+                    $contentNode = $this->dom->importNode($contentNode, true);
+                    $newItem->appendChild($contentNode);
+                }
+
+            }
+
+            return $this;
+        }
     }
 
-    public function appendHtml($html)
+    public function append($html)
     {
 
         $dom = new DOMDocument();
@@ -334,7 +345,7 @@ trait HTMLEditingMethods
         return $this;
     }
 
-    public function prependHtml($html)
+    public function prepend($html)
     {
 
         $dom = new DOMDocument();
@@ -355,7 +366,7 @@ trait HTMLEditingMethods
         return $this;
     }
 
-    public function removeTag()
+    public function remove()
     {
 
         foreach ($this->obj as $item) 
@@ -463,7 +474,7 @@ trait HTMLEditingMethods
         return $this;
     }
 
-    public function clearTag()
+    public function clear()
     {
 
         $dom = new DOMDocument();
@@ -480,6 +491,7 @@ trait HTMLEditingMethods
                 $contentNode = $this->dom->importNode($contentNode, true);
                 $newItem->appendChild($contentNode);
             }
+            
         }
 
         return $this;
@@ -573,8 +585,8 @@ class WebParser
             "/\]\[/"                                => "]/*[",
             "/\][\s]*([\w])/"                       => "]/$1",
             "/{dot}/"                               => ".",
-            "/:first-child/"                        => "[1]",
-            "/:last-child/"                         => "[last()]",
+            "/:first/"                              => "[1]",
+            "/:last/"                               => "[last()]",
             "/[^\w\]]::text/"                       => "text()",
             "/([\w\]])::text/"                      => "$1/text()",
             "/[^\w\]]::comments/"                   => "comment()",
