@@ -6,7 +6,7 @@
 [![GitHub stars](https://img.shields.io/github/stars/felipe1234-dev/simple-php-dom-query)](https://github.com/felipe1234-dev/simple-php-dom-query/stargazers)
 [![GitHub license](https://img.shields.io/github/license/felipe1234-dev/simple-php-dom-query)](https://github.com/felipe1234-dev/simple-php-dom-query/blob/main/LICENSE)
 
-Simple PHP Dom Query interface simplification over native PHP Dom Document, which tries look like closely to jQuery to look friendly to front-end developers. In this library, most of the main functions in jQuery and jQuery-like PHP DOM look exactly like behavior and syntax. This library was done for training purposes.
+Simple PHP Dom Query interface simplification over native PHP Dom Document, which tries to look like closely to jQuery to look friendly to front-end developers. In this library, most of the main functions in jQuery and jQuery-like PHP DOM look exactly like behavior and syntax. This library was done for training purposes.
 
 ## Installation
 
