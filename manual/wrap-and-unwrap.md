@@ -9,9 +9,9 @@
 &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;
 &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;
 &emsp;&emsp;&emsp;&emsp;
-<a href="start.md"><b>Next >></b></a>
+<a href="editclass-and-removeclass.md"><b>Next >></b></a>
 
-Are used to wrap or unwrap nodes with other node elements.
+The `wrap()` and `unwrap()` methods wrap and unwrap the specified HTML element(s) around each selected element.
 
 ## Syntax: `wrap`
 
