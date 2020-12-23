@@ -123,17 +123,39 @@ $doc->query("p::text");
 </details>
 
 ### `::attributes` - queries node attributes
-<details><summary>Match text nodes anywhere</summary>
+<details><summary>Match all attributes of any tags</summary>
 
 ```php
-$doc->query("*::text");
+$doc->query("*::attributes");
 ```
 </details>
 
-<details><summary>Match text inside p tags</summary>
+<details><summary>Match all attributes of p tags</summary>
 
 ```php
 $doc->query("p::text");
+```
+</details>
+
+<details><summary>Match href attribute of a tags</summary>
+
+```php
+$doc->query("a::href");
+```
+</details>
+
+### `::comments` - queries HTML comments
+<details><summary>Match all HTML comments nested anywhere</summary>
+
+```php
+$doc->query("*::comments");
+```
+</details>
+
+<details><summary>Match HTML comments which are nested in div tags</summary>
+
+```php
+$doc->query("div::comments");
 ```
 </details>
 
@@ -143,7 +165,7 @@ $doc->query("p::text");
     <summary>List of Methods</summary>
     <ol>
         <li>
-            <a href="#wrap-and-unwrap">wrap() and Unwrap()</a>
+            <a href="manual/wrap-and-unwrap.md">wrap() and Unwrap()</a>
         </li>
         <li>
             <a href="#addclass-and-removeclass">addClass() and removeClass()</a>
