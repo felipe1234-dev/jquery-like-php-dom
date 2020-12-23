@@ -1,4 +1,4 @@
-# `addClass` and `removeClass`
+# `attr` and `removeAttr`
 
 <a href="addclass-and-removeclass.md"><b><< Previous</b></a>
 &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;
