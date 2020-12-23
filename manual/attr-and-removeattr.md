@@ -15,7 +15,7 @@ The `attr()` method sets or returns attributes and values of the selected elemen
 
 When this method is used to **return** the attribute value, it returns the value of the FIRST matched element.
 
-In case you want to return the attribute value of all matched elements, you must use `iterate()` together.
+In case you want to return the attribute value of all matched elements, you must use `iterate()` together. See [`start.md`](start.md) for more information.
 
 When this method is used to **set** attribute values, it sets one or more attribute/value pairs for the set of matched elements.
 
