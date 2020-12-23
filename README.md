@@ -84,7 +84,7 @@ git clone git://git.code.sf.net/p/simple-php-dom-query/repository simple-php-dom
       <b>Changing first &lt;a&gt; href</b>
    </summary>
 
-   jQUery
+   jQuery
    ```html
    <script>
    $(document).ready(function(){
