@@ -6,7 +6,7 @@ trait AttributeEditingMethods
 
     public function attr($attr = null, $value = null)
     {
-        if (!isset($attr) || !isset($value))
+        if (isset($value))
         {
     
             foreach ($this->obj as $item) 
@@ -19,7 +19,7 @@ trait AttributeEditingMethods
                 
             }
             
-        }  
+        }   
         else {
               
             foreach ($this->obj as $item) 
