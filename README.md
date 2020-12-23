@@ -33,7 +33,7 @@ git clone git://git.code.sf.net/p/simple-php-dom-query/repository simple-php-dom
    ```html
    <script>
    $(document).ready(function(){
-         $("img").wrap("<figure></figure>");
+      $("img").wrap("<figure></figure>");
    });
    </script>
    ```
