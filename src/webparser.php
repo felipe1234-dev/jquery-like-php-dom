@@ -6,27 +6,33 @@ trait AttributeEditingMethods
 
     public function attr($attr = null, $value = null)
     {
-    
-        foreach ($this->obj as $item) 
+        if (!isset($attr) || !isset($value))
         {
-            if (!isset($attr) || !isset($value))
+    
+            foreach ($this->obj as $item) 
             {
+            
                 
                 $item->setAttribute("$attr", "$value");
                 
                 return $this;
                 
-            } 
-            else {
-                
-                $attr = $item->getAttribute("$attr");
-                
-                return $attr;
-                
             }
             
+        }  
+        else {
+              
+            foreach ($this->obj as $item) 
+            {
+                
+                $attr = $item->getAttribute("$attr");
+
+                return $attr;
+                    
+            }
+                
         }
-        
+           
     }
 
     public function removeAttr($attr)
@@ -123,51 +129,76 @@ trait AttributeEditingMethods
 
     public function href($url = null)
     {
-
-        foreach ($this->obj as $item) 
+        
+        if (isset($url)) 
         {
             
-            if (isset($url)) 
+            foreach ($this->obj as $item) 
             {
+            
                 $item->setAttribute("href", "$url");
-            }
-            else {
-                return $item->getAttribute("href");
+                
             }
             
+            return $this;
+        }   
+        else {
+            
+            foreach ($this->obj as $item) 
+            {
+                
+                return $item->getAttribute("href");
+                
+            }
+           
         }
 
-        return $this;
     }
 
     public function src($url = null)
     {
 
-        foreach ($this->obj as $item) 
+        if (isset($url)) 
         {
-            if (isset($url)) 
+            
+            foreach ($this->obj as $item) 
             {
                 $item->setAttribute("src", "$url");
             }
-            else {
+        
+        }
+        else {
+            
+            foreach ($this->obj as $item) 
+            {
                 return $item->getAttribute("src");
             }
+            
         }
         
     }
 
     public function val($value = null)
     {
-
-        foreach ($this->obj as $item) 
+        
+        if (isset($url)) 
         {
             
-            if (isset($url)) 
+            foreach ($this->obj as $item) 
             {
+                
                 $item->setAttribute("value", "$value");
+                
             }
-            else {
+            
+        }
+        else {
+            
+            foreach ($this->obj as $item) 
+            {
+                
                 return $item->getAttribute("value");
+                
             }
             
         }
@@ -179,22 +210,28 @@ trait TextEditingMethods
 {
     public function text($text = null)
     {
-        
-        foreach ($this->obj as $item) 
+        if (!isset($text))
         {
-            if (!isset($text))
+            
+            foreach ($this->obj as $item) 
             {
                 
                 return $item->textContent;
                 
             } 
-            else {
+         
+        }
+        else {
+             
+            foreach ($this->obj as $item) 
+            {
                 
                 $item->textContent = $text;
-            
-                return $this;
                 
             }
+            
+            return $this;
+            
         }
         
     }
