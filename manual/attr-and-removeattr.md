@@ -46,7 +46,7 @@ width="284" height="213">
 
 ```php
 <?php
-include "../src/webscraper.php";
+include "../src/webparser.php";
 $doc = new WebScraper();
 $doc->loadHTML($html);
 
@@ -81,7 +81,7 @@ $doc->Q([selector])->removeAttr([attribute]);
 
 ```php
 <?php
-include "../src/webscraper.php";
+include "../src/webparser.php";
 $doc = new WebScraper();
 $doc->loadHTML($html);
 
