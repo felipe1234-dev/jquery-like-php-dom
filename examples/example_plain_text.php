@@ -4,4 +4,4 @@ include_once "../src/webparser.php";
 $doc = new WebParser();
 $doc->loadHTMLFile('https://en.wikipedia.org/wiki/COVID-19_pandemic');
 // * stands for "everything"
-echo $doc->query("*")->getText();
+echo $doc->query("*")->text();
