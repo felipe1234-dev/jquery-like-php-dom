@@ -40,7 +40,7 @@ $doc->Q([selector])->prepend([html-content]);
 ```php
 <?php
 include "../src/webparser.php";
-$doc = new WebScraper();
+$doc = new WebParser();
 $doc->loadHTML($html);
 
 $doc->Q("ol")->append("<li>Appended html</li>");
@@ -68,4 +68,4 @@ $doc->output();
 
 ## Example test code snippet
 
-Click [here](../examples/example_editclass_removeclass.php) to go to example test.
+Click [here](../examples/example_append_prepend.php) to go to example test.
