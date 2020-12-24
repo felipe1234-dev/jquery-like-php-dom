@@ -13,7 +13,7 @@ Simple PHP Dom Query interface simplification over native PHP Dom Document, whic
 **Composer**
 
 ```
-composer require felipe1234-dev/jquery-like-php-dom
+composer require felipe1234-dev/php-dom-query
 ```
 
 **Git**
