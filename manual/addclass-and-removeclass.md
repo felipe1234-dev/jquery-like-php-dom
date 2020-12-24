@@ -32,8 +32,8 @@ $doc->query("[selector]")->removeClass("[className]");
 
 ```php
 <?php
-include "../src/webscraper.php";
-$doc = new WebScraper();
+include "../src/webparser.php";
+$doc = new WebParser();
 $doc->loadHTML($html);
 
 $doc->Q("h1")->addClass("title");
