@@ -1,6 +1,6 @@
 # `append` and `prepend`
 
-<a href="html-and-tet.md"><b><< Previous</b></a>
+<a href="html-and-text.md"><b><< Previous</b></a>
 &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;
 &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;
 &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;
