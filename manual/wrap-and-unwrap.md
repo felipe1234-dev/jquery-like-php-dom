@@ -9,7 +9,7 @@
 &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;
 &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;
 &emsp;&emsp;&emsp;&emsp;
-<a href="editclass-and-removeclass.md"><b>Next >></b></a>
+<a href="addclass-and-removeclass.md"><b>Next >></b></a>
 
 The `wrap()` and `unwrap()` methods wrap and unwrap the specified HTML element(s) around each selected element.
 
