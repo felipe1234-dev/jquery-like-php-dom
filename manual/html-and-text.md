@@ -47,7 +47,7 @@ $doc->Q([selector])->text([text-content]);
 ```php
 <?php
 include "../src/webparser.php";
-$doc = new WebScraper();
+$doc = new WebParser();
 $doc->loadHTML($html);
 
 $doc->Q("p:first")->html("<i>Hello world!</i>");
