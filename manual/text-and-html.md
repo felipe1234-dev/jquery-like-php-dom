@@ -64,6 +64,7 @@ $doc->output();
 <p><i>Hello world!</i></p>
 <p>&lt;b&gt;this is a paragraph&lt;/b&gt;</p> 
 ```
+</details>
 
 ## Example test code snippet
 
