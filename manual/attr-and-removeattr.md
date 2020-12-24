@@ -47,7 +47,7 @@ width="284" height="213">
 ```php
 <?php
 include "../src/webparser.php";
-$doc = new WebScraper();
+$doc = new WebParser();
 $doc->loadHTML($html);
 
 $doc->Q("img")->attr("width", "500px");
@@ -82,7 +82,7 @@ $doc->Q([selector])->removeAttr([attribute]);
 ```php
 <?php
 include "../src/webparser.php";
-$doc = new WebScraper();
+$doc = new WebParser();
 $doc->loadHTML($html);
 
 $doc->Q("p")->removeAttr("style");
