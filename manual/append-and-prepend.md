@@ -1,4 +1,4 @@
-# `html` and `text`
+# `append` and `prepend`
 
 <a href="html-and-tet.md"><b><< Previous</b></a>
 &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;
