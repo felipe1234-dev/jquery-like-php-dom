@@ -18,8 +18,8 @@ The `addClass()` and `removeClass()` methods add or remove one or more class nam
 ## Syntax: `addClass` and `removeClass`
 
 ```php
-$doc->query("[selection]")->addClass("[className]");
-$doc->query("[selection]")->removeClass("[className]");
+$doc->query("[selector]")->addClass("[className]");
+$doc->query("[selector]")->removeClass("[className]");
 ```
 ### `$html` 
 
