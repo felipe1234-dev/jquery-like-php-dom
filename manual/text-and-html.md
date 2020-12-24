@@ -9,7 +9,7 @@
 &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;
 &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;
 &emsp;&emsp;&emsp;&emsp;
-<a href="setattr-and-removeattr.md"><b>Next >></b></a>
+<a href="append-and-prepend.md"><b>Next >></b></a>
 
 The `html()` method sets or returns the content (innerHTML) of the selected elements.
 
