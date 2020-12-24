@@ -16,14 +16,14 @@ $doc->loadHTML('
 //-----------------------------------------------------------------------------//
 
 
-$doc->query("h1")->editText("Not working form");
+$doc->query("h1")->text("Not working form");
 $doc->output();
 
 echo "<br>";
 
 // if you are changing the same object you can write all its modifications in one line
-$doc->query("form input[name='name']")->addAttr("id", "name")->removeAttr("tabindex");
-$doc->query("button")->addAttr("onclick", "document.querySelector('form').submit()");
+$doc->query("form input[name='name']")->attr("id", "name")->removeAttr("tabindex");
+$doc->query("button")->attr("onclick", "document.querySelector('form').submit()");
 
-$doc->query("h1")->editText("Working form");
+$doc->query("h1")->text("Working form");
 $doc->output();
