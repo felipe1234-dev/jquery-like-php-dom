@@ -28,8 +28,8 @@ $doc->query("[selection]")->wrap("<[tagname] [attributes...]></[tagname]>");
 Php
 ```php
 <?php
-include "../src/webscraper.php";
-$doc = new WebScraper();
+include "../src/webparser.php";
+$doc = new WebParser();
 $doc->loadHTML($html);
 
 $doc->query("img[src='image.jpg']")->wrap("<figure></figure>");
@@ -51,8 +51,8 @@ Output
 Php
 ```php
 <?php
-include "../src/webscraper.php";
-$doc = new WebScraper();
+include "../src/webparser.php";
+$doc = new WebParser();
 $doc->loadHTML($html);
 
 $doc->query("img[src='image.jpg']")->wrap('<figure class="img-wrapper" style="float: center; display: inline-block;"></figure>');
@@ -85,8 +85,8 @@ $doc->query("[selection]")->unwrap();
 
 ```php
 <?php
-include "../src/webscraper.php";
-$doc = new WebScraper();
+include "../src/webparser.php";
+$doc = new WebParser();
 $doc->loadHTML($html);
 
 $doc->query("img[src='image.jpg']")->unwrap();
