@@ -51,15 +51,11 @@ $doc = new WebScraper();
 $doc->loadHTML($html);
 
 $doc->Q("p:first")->html("<i>Hello world!</i>");
-$text = $doc->text();
+$text = $doc->Q("p:first")->text();
 $doc->Q("p[2]")->text("<b>$text</b>");
 
 $doc->output();
 ```
-**Note**: every time you need to make a sequence of changes to the same element, it is not necessary to use `Q()/query()` every time.
-
-The last selector will be saved in `$doc` object until it is modified.
-
 </details>
 
 <details><summary><b>Output</b></summary>
