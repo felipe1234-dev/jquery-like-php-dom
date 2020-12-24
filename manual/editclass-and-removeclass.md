@@ -9,7 +9,7 @@
 &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;
 &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;
 &emsp;&emsp;&emsp;&emsp;
-<a href="setattr-and-removeattr.md"><b>Next >></b></a>
+<a href="attr-and-removeattr.md"><b>Next >></b></a>
 
 The `addClass()` and `removeClass()` methods add or remove one or more class names to the selected elements.
 
