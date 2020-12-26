@@ -65,19 +65,6 @@ trait AttributeEditingMethods
         return $this;
     }
 
-    public function hasAttr($attr, $val)
-    {
-
-        foreach ($this->obj as $item) 
-        {
-            $attrs = $item->getAttribute("$attr");
-        }
-
-        $bool = (preg_match("/" . preg_quote($val) . "/", $attrs)) ? true : false;
-
-        return $bool;
-    }
-
     public function addClass($class)
     {
 
@@ -112,19 +99,6 @@ trait AttributeEditingMethods
         }
 
         return $class;
-    }
-
-    public function hasClass($class)
-    {
-
-        foreach ($this->obj as $item) 
-        {
-            $classes = $item->getAttribute("class");
-        }
-
-        $bool = (preg_match("/" . preg_quote($class) . "/", $classes)) ? true : false;
-
-        return $bool;
     }
 
     public function href($url = null)
