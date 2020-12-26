@@ -165,34 +165,44 @@ $doc->query("div::comments");
     <summary>List of Methods</summary>
     <ol>
         <li>
-            <a href="wrap-and-unwrap.md">wrap() and Unwrap()</a>
+            <a href="wrap-and-unwrap.md">
+                wrap() and Unwrap()
+            </a>
         </li>
         <li>
-            <a href="addclass-and-removeclass.md">addClass() and removeClass()</a>
+            <a href="addclass-and-removeclass.md">
+                addClass() and removeClass()
+            </a>
         </li>
         <li>
-            <a href="attr-and-removeattr.md">attr() and removeAttr()</a>
+            <a href="attr-and-removeattr.md">
+                attr() and removeAttr()
+            </a>
         </li>
         <li>
-            <a href="html-and-text.md">html() and text()</a>
+            <a href="html-and-text.md">
+                html() and text()
+            </a>
         </li>
         <li>
-            <a href="append-and-prepend.md">append() and prepend()</a>
+            <a href="append-and-prepend.md">
+                append() and prepend()
+            </a>
         </li>
         <li>
-            <a href="hasclass-and-hasattr.md">hasClass() and hasAttr()</a>
+            <a href="remove-and-clear.md">
+                remove() and clear()
+            </a>
         </li>
         <li>
-            <a href="remove-and-clear.md">remove() and clear()</a>
+            <a href="replacetext-and-replacetextcallback.md">
+                replaceText() and replaceTextCallback()
+            </a>
         </li>
         <li>
-            <a href="hasattr-and-hasclass.md">hasAttr() and hasClass()</a>
-        </li>
-        <li>
-            <a href="replacetext-and-replacetextcallback.md">replaceText() and replaceTextCallback()</a>
-        </li>
-        <li>
-            <a href="replacewith.md">replaceWith()</a>
+            <a href="replacewith.md">
+                replaceWith()
+            </a>
         </li>
     </ol>
 </details>
