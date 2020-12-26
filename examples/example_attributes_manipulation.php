@@ -13,7 +13,7 @@ $doc->loadHTML('
     </form>
     <button>submit</button>
 ');
-//-----------------------------------------------------------------------------//
+//-----------------------------------------------------------------------------------//
 
 
 $doc->query("h1")->text("Not working form");
@@ -21,7 +21,8 @@ $doc->output();
 
 echo "<br>";
 
-// if you are changing the same object you can write all its modifications in one line
+// if you are changing the same element multiple times
+// you can write all its modifications in one line
 $doc->query("form input[name='name']")->attr("id", "name")->removeAttr("tabindex");
 $doc->query("button")->attr("onclick", "document.querySelector('form').submit()");
 
