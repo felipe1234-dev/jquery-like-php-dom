@@ -9,7 +9,7 @@
 &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;
 &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;
 &emsp;&emsp;&emsp;&emsp;
-<a href="hasclass-and-hasattr.md.md"><b>Next >></b></a>
+<a href="remove-and-clear.md"><b>Next >></b></a>
 
 The `append()` method inserts specified content at the end of the selected elements.
 
