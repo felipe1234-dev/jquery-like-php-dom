@@ -52,4 +52,4 @@ $doc->output();
 
 ## Example test code snippet
 
-Click [here](../examples/example_editclass_removeclass.php) to go to example test.
+Click [here](../examples/example_addclass_removeclass.php) to go to example test.
