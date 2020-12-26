@@ -35,35 +35,41 @@ $doc->Q([selector])->prepend([html-content]);
 </ol>
 ```
 
-<details><summary><b>Php</b></summary>
+<details>
+  <summary>
+    <b>Php</b>
+  </summary>
 
-```php
-<?php
-include "../src/webparser.php";
-$doc = new WebParser();
-$doc->loadHTML($html);
+  ```php
+  <?php
+  include "../src/webparser.php";
+  $doc = new WebParser();
+  $doc->loadHTML($html);
 
-$doc->Q("ol")->append("<li>Appended html</li>");
-$doc->Q("ol")->prepend("<li>Prepended html</li>");
+  $doc->Q("ol")->append("<li>Appended html</li>");
+  $doc->Q("ol")->prepend("<li>Prepended html</li>");
 
-$doc->output();
-```
+  $doc->output();
+  ```
 </details>
 
-<details><summary><b>Output</b></summary>
+<details>
+  <summary>
+    <b>Output</b>
+  </summary>
 
-```html
-<p>This is a paragraph.</p>
-<p>This is another paragraph.</p>
+  ```html
+  <p>This is a paragraph.</p>
+  <p>This is another paragraph.</p>
 
-<ol>
-  <li>Prepended html</li>
-  <li>List item 1</li>
-  <li>List item 2</li>
-  <li>List item 3</li>
-  <li>Appended html</li>
-</ol> 
-```
+  <ol>
+    <li>Prepended html</li>
+    <li>List item 1</li>
+    <li>List item 2</li>
+    <li>List item 3</li>
+    <li>Appended html</li>
+  </ol> 
+  ```
 </details>
 
 ## Example test code snippet
