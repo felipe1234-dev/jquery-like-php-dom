@@ -25,6 +25,6 @@ echo "<br>";
 // you can write all its modifications in one line
 $doc->query("form input[name='name']")->attr("id", "name")->removeAttr("tabindex");
 $doc->query("button")->attr("onclick", "document.querySelector('form').submit()");
-
 $doc->query("h1")->text("Working form");
+
 $doc->output();
