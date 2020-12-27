@@ -10,14 +10,23 @@ $doc->query("head")->append("<style>
         font-size: 20px;
         font-weight: bold;
     }
-    .letter-a.bold {
-        font-weight: bold;
+    .letter-a {
         font-size: 20px;
+    }
+    .bold {
+        font-weight: bold;
+    }
+    .light {
+        font-weight: light;
     }
 </style>");
 
 $doc->Q("a")->addClass("link");
 $doc->Q("*::text")->replaceText("/(a)/i", '<span id="a-letter">$1</span>', true);
 $doc->Q("span#a-letter")->addClass("a-letter bold");
+
+$doc->output();
+
+$doc->Q(".a-letter")->removeClass("bold")->addClass("light");
 
 $doc->output();
