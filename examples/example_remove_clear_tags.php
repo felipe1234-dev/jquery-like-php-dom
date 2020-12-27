@@ -2,17 +2,9 @@
 include_once "../src/webparser.php";
 // initialization
 $doc = new WebParser();
-$doc->loadHTML('
-  <p> </p>
-  <p>
-      </p>
-  <section style="color: red;"> Do not remove this</section>
-      <div></div>
-  <span>  
-    
-        </span>
-');
+$doc->loadHTMLFile('https://en.wikipedia.org/wiki/COVID-19_pandemic');
 
-$doc->removeEmptyTags();
+$doc->Q("nav")->clear();
+$doc->Q("script, noscript, head, style")->remove();
 
 $doc->output();
