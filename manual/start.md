@@ -1,56 +1,75 @@
 
 # Getting Started
 
-<details><summary><b>Initialization</b></summary>
+<details>
+    <summary>
+        <b>Initialization</b>
+    </summary>
 
-```php
-<?php
-include "path/webparser.php";
-$doc = new WebParser();
-```
+    ```php
+    <?php
+    include "path/webparser.php";
+    $doc = new WebParser();
+    ```
 </details>
-<details><summary><b>Load URLs</b></summary>
+<details>
+    <summary>
+        <b>Load URLs</b>
+    </summary>
 
-```php
-$doc->loadHTMLFile($url);
-```
+    ```php
+    $doc->loadHTMLFile($url);
+    ```
 </details>
-<details><summary><b>Load HTML String</b></summary>
+<details>
+    <summary>
+        <b>Load HTML String</b>
+    </summary>
 
-```php
-$doc->loadHTML($html);
-```
+    ```php
+    $doc->loadHTML($html);
+    ```
 </details>
-<details><summary><b>Load XML String</b></summary>
+<details>
+    <summary>
+        <b>Load XML String</b>
+    </summary>
 
-```php
-$doc->loadXML($xml);
-```
+    ```php
+    $doc->loadXML($xml);
+    ```
 </details>
-<details><summary><b>Echo parsed doc</b></summary>
+<details>
+    <summary>
+        <b>Echo parsed doc</b>
+    </summary>
 
-```php
-$doc->output();
-?>
-```
+    ```php
+    $doc->output();
+    ?>
+    ```
 </details> 
 
 ## `query` and `Q`
 
 Both do the same thing, `Q` is short for `query` in case you want to write less. Are used to find elements in DOM.
+
 ```php
 $doc->query("li");
 // Note: impacts -all- <li> tags
 ```
+
 ```php
 $doc->query("li[1]");
 // Note: impacts -1st- <li> tag only
 ```
+
 ```php
 $doc->query("li *[1]");
 $doc->query("li:first-child");
 // Note: impact <li>s' -first child- 
 ```
+
 Also possible: 
 
 ```php
@@ -94,75 +113,104 @@ These are 3 new selectors that try to emulate the behaviors of the following xpa
 If you have been using xpath for a long time, you already understand how they work, but if not, here it is a simple review:
 
 ### `*` - Global selector - matches everything
-<details><summary>Match everything anywhere</summary>
+<details>
+    <summary>
+        Match everything anywhere
+    </summary>
 
-```php
-$doc->query("*");
-```
+    ```php
+    $doc->query("*");
+    ```
 </details>
-<details><summary>Match everything that is inside a p tag only</summary>
+<details>
+    <summary>
+        Match everything that is inside a p tag only
+    </summary>
 
-```php
-$doc->query("p *");
-```
+    ```php
+    $doc->query("p *");
+    ```
 </details>
 
 ### `::text` - queries text nodes
-<details><summary>Match text nodes anywhere</summary>
+<details>
+    <summary>
+        Match text nodes anywhere
+    </summary>
 
-```php
-$doc->query("*::text");
-```
+    ```php
+    $doc->query("*::text");
+    ```
 </details>
 
-<details><summary>Match text inside p tags</summary>
+<details>
+    <summary>
+        Match text inside p tags
+    </summary>
 
-```php
-$doc->query("p::text");
-```
+    ```php
+    $doc->query("p::text");
+    ```
 </details>
 
 ### `::attributes` - queries node attributes
-<details><summary>Match all attributes of any tags</summary>
+<details>
+    <summary>
+        Match all attributes of any tags
+    </summary>
 
-```php
-$doc->query("*::attributes");
-```
+    ```php
+    $doc->query("*::attributes");
+    ```
 </details>
 
-<details><summary>Match all attributes of p tags</summary>
+<details>
+    <summary>
+        Match all attributes of p tags
+    </summary>
 
-```php
-$doc->query("p::text");
-```
+    ```php
+    $doc->query("p::text");
+    ```
 </details>
 
-<details><summary>Match href attribute of a tags</summary>
+<details>
+    <summary>
+        Match href attribute of a tags
+    </summary>
 
-```php
-$doc->query("a::href");
-```
+    ```php
+    $doc->query("a::href");
+    ```
 </details>
 
 ### `::comments` - queries HTML comments
-<details><summary>Match all HTML comments nested anywhere</summary>
+<details>
+    <summary>
+        Match all HTML comments nested anywhere
+    </summary>
 
-```php
-$doc->query("*::comments");
-```
+    ```php
+    $doc->query("*::comments");
+    ```
 </details>
 
-<details><summary>Match HTML comments which are nested in div tags</summary>
+<details>
+    <summary>
+        Match HTML comments which are nested in div tags
+    </summary>
 
-```php
-$doc->query("div::comments");
-```
+    ```php
+    $doc->query("div::comments");
+    ```
 </details>
 
 
 <!-- TABLE OF CONTENTS -->
 <details open="open">
-    <summary>List of Methods</summary>
+    <summary>
+        List of Methods
+    </summary>
     <ol>
         <li>
             <a href="wrap-and-unwrap.md">
