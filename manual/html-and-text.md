@@ -42,28 +42,34 @@ $doc->Q([selector])->text([text-content]);
 <p>This is another paragraph</p>
 ```
 
-<details><summary><b>Php</b></summary>
+<details>
+    <summary>
+        <b>Php</b>
+    </summary>
 
-```php
-<?php
-include "../src/webparser.php";
-$doc = new WebParser();
-$doc->loadHTML($html);
+    ```php
+    <?php
+    include "../src/webparser.php";
+    $doc = new WebParser();
+    $doc->loadHTML($html);
 
-$doc->Q("p:first")->html("<i>Hello world!</i>");
-$text = $doc->Q("p:first")->text();
-$doc->Q("p[2]")->text("<b>$text</b>");
+    $doc->Q("p:first")->html("<i>Hello world!</i>");
+    $text = $doc->Q("p:first")->text();
+    $doc->Q("p[2]")->text("<b>$text</b>");
 
-$doc->output();
-```
+    $doc->output();
+    ```
 </details>
 
-<details><summary><b>Output</b></summary>
+<details>
+    <summary>
+        <b>Output</b>
+    </summary>
 
-```html
-<p><i>Hello world!</i></p>
-<p>&lt;b&gt;this is a paragraph&lt;/b&gt;</p> 
-```
+    ```html
+    <p><i>Hello world!</i></p>
+    <p>&lt;b&gt;this is a paragraph&lt;/b&gt;</p> 
+    ```
 </details>
 
 ## Example test code snippet
